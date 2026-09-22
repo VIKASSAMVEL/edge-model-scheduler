@@ -1,21 +1,40 @@
 version: '3.8'
 
 services:
-  ros2_arbiter:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.ros2_humble
-    image: edge_scheduler_ros2:humble
-    container_name: edge_scheduler_container
+  # 1. Edge Autonomous Arbiter with ROS 2 Navigation Stress Test
+  ros2_navigation_demo:
+    image: osrf/ros:humble-desktop-full
+    container_name: edge_scheduler_ros2_demo
     network_mode: host
     ipc: host
-    privileged: true
     volumes:
-      - ..:/workspace/edge-model-scheduler
+      - ..:/workspace
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
-               cd /workspace/edge-model-scheduler/ros2_ws &&
+               cd /workspace/ros2_ws &&
                colcon build --symlink-install &&
                source install/setup.bash &&
-               echo '[ROS2] Build Successful! Launching obstacle_arbiter_node...' &&
-               ros2 run edge_scheduler_ros2 obstacle_arbiter_node"
+               echo '[ROS2] Launching edge_scheduler_ros2 navigation collision avoidance test...' &&
+               ros2 launch edge_scheduler_ros2 navigation_demo.launch.py"
+
+  # 2. Production Edge REST & WebSocket API Daemon
+  api_service:
+    image: osrf/ros:humble-desktop-full
+    container_name: edge_scheduler_api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ..:/workspace
+    command: >
+      bash -c "pip install fastapi uvicorn pydantic &&
+               cd /workspace &&
+               PYTHONPATH=/workspace/build_native python3 api/edge_api_server.py"
+
+  # 3. Live Mission Control Telemetry Dashboard
+  live_dashboard:
+    image: osrf/ros:humble-desktop-full
+    container_name: edge_scheduler_dashboard
+    volumes:
+      - ..:/workspace
+    command: >
+      bash -c "cd /workspace && python3 scripts/live_dashboard.py --duration 60"

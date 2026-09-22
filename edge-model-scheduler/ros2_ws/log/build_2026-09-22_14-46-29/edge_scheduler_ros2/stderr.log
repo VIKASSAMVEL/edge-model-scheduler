@@ -1,4 +1,0 @@
-/workspace/ros2_ws/src/edge_scheduler_ros2/src/obstacle_arbiter_node.cpp: In member function ‘void StandaloneArbiterNode::on_camera_frame(sensor_msgs::msg::Image_<std::allocator<void> >::ConstSharedPtr)’:
-/workspace/ros2_ws/src/edge_scheduler_ros2/src/obstacle_arbiter_node.cpp:34:72: warning: unused parameter ‘msg’ [-Wunused-parameter]
-   34 |     void on_camera_frame(const sensor_msgs::msg::Image::ConstSharedPtr msg) {
-      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~

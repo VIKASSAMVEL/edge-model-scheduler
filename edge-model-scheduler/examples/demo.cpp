@@ -30,10 +30,18 @@ int main() {
     };
 
     for (int i = 0; i < 5; ++i) {
-        InferenceTask t_low{"low_model", Priority::LOW, low_priority_task, 0};
+        LegacyInferenceTask t_low;
+        t_low.model_id = "low_model";
+        t_low.priority = Priority::LOW;
+        t_low.payload = low_priority_task;
+        t_low.timestamp_ms = 0;
         scheduler.submit_task(t_low);
 
-        InferenceTask t_high{"high_model", Priority::HIGH, high_priority_task, 0};
+        LegacyInferenceTask t_high;
+        t_high.model_id = "high_model";
+        t_high.priority = Priority::HIGH;
+        t_high.payload = high_priority_task;
+        t_high.timestamp_ms = 0;
         scheduler.submit_task(t_high);
     }
 

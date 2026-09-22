@@ -1,5 +1,10 @@
 # Build artifacts
 build/
+build_native/
+**/build_native/
+**/ros2_ws/build/
+**/ros2_ws/install/
+**/ros2_ws/log/
 bin/
 lib/
 *.so

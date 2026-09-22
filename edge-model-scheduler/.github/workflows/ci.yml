@@ -1,0 +1,77 @@
+name: EdgeModelScheduler CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  cpp-native-build-and-test:
+    name: C++17 Core Build & Unit Tests
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Build Toolchain & Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential python3-dev pybind11-dev libpthread-stubs0-dev
+
+      - name: Configure CMake & Build Native
+        run: |
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+      - name: Execute C++ Unit Tests (CTest)
+        run: |
+          cd build
+          ./test_scheduler_core
+          ctest --output-on-failure
+
+  python-bindings-verification:
+    name: Python Bindings & Pytest Suite
+    runs-on: ubuntu-22.04
+    needs: cpp-native-build-and-test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Python Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest fastapi uvicorn pydantic
+
+      - name: Build pybind11 Module
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake build-essential pybind11-dev
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make edge_scheduler_py -j$(nproc)
+
+      - name: Run Pytest Suite
+        run: |
+          PYTHONPATH=$PWD/build pytest tests/test_python_bindings.py -v
+
+  ros2-humble-container-verification:
+    name: ROS 2 Humble Integration Verification
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run ROS 2 Build in Docker Container
+        run: |
+          docker run --rm -v "$PWD:/workspace" osrf/ros:humble-desktop-full bash -c "
+            cd /workspace/ros2_ws &&
+            colcon build --symlink-install &&
+            source install/setup.bash &&
+            echo 'ROS 2 package built successfully'
+          "

@@ -36,7 +36,7 @@ void AdvancedScheduler::stop() {
 void AdvancedScheduler::submit_task(const std::string& model_id, Priority priority, 
                                    std::function<void(void* buffer)> payload) {
     if (!running_) return;
-    InferenceTask task;
+    AdvancedInferenceTask task;
     task.model_id = model_id;
     task.priority = priority;
     task.payload = payload;
@@ -60,7 +60,7 @@ void AdvancedScheduler::check_aging_and_starvation(uint64_t now) {
 
 void AdvancedScheduler::worker_loop() {
     while (running_) {
-        InferenceTask current_task;
+        AdvancedInferenceTask current_task;
         {
             std::unique_lock<std::mutex> lock(queue_mutex_);
             cv_.wait(lock, [this] { return !task_list_.empty() || !running_; });
@@ -77,7 +77,7 @@ void AdvancedScheduler::worker_loop() {
             check_aging_and_starvation(now);
 
             std::stable_sort(task_list_.begin(), task_list_.end(), 
-                [](const InferenceTask& a, const InferenceTask& b) {
+                [](const AdvancedInferenceTask& a, const AdvancedInferenceTask& b) {
                     if (a.effective_priority() == b.effective_priority()) {
                         return a.timestamp_ms < b.timestamp_ms;
                     }
