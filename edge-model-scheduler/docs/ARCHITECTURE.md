@@ -1,25 +1,47 @@
-# EdgeModelScheduler v2.5 Architecture & Systems Specification
+# EdgeModelScheduler v3.0 Architecture & Systems Specification
 
 ```
-   ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-   │                     EDGE MULTI-MODEL RESOURCE ARBITER (C++17 CORE)                      │
-   │                                                                                         │
-   │   ┌───────────────────────┐   Dynamic Hysteresis   ┌────────────────────────────────┐   │
-   │   │ Hardware Telemetry    │ ─────────────────────> │   QuantizationGovernor         │   │
-   │   │ (Tegra / Sysfs / GPU) │                        │   (FP16 <-> INT8 State Machine)│   │
-   │   └───────────────────────┘                        └────────────────────────────────┘   │
-   │               │                                                     │                   │
-   │               ▼                                                     ▼                   │
-   │   ┌───────────────────────┐                        ┌────────────────────────────────┐   │
-   │   │ EWMA Latency Tracker  │ ─────────────────────> │   Dual CUDA Stream Dispatcher  │   │
-   │   │ (Pre-dispatch SLO)    │                        │   (Hardware SM Priority Queue) │   │
-   │   └───────────────────────┘                        └────────────────────────────────┘   │
-   │                                                                     │                   │
-   │   ┌───────────────────────┐     Zero-Copy Pointer                   ▼                   │
-   │   │ PinnedMemoryPool      │ ─────────────────────> ┌────────────────────────────────┐   │
-   │   │ (cudaHostAllocMapped) │                        │   TensorRT Execution Engine    │   │
-   │   └───────────────────────┘                        └────────────────────────────────┘   │
-   └─────────────────────────────────────────────────────────────────────────────────────────┘
+                     ┌──────────────────────────────────────────────────────────┐
+                     │          UNCOORDINATED CLIENT PROCESSES                  │
+                     │  (ROS 2 Node 1)     (ROS 2 Node 2)    (External App)     │
+                     └─────────┬─────────────────┬──────────────────┬───────────┘
+                               │                 │                  │
+                               ▼                 ▼                  ▼
+                     ┌──────────────────────────────────────────────────────────┐
+                     │     ZERO-COPY IPC TRANSPORT LAYER (POSIX SHM / CUDA IPC) │
+                     │       - /dev/shm Ring Buffer for CPU Frame Buffers       │
+                     │       - cudaIpcMemHandle for Direct GPU Virtual Memory   │
+                     └──────────────────────────┬───────────────────────────────┘
+                                                │
+                                                ▼
+┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+│                    EDGE-MODEL-SCHEDULER SYSTEM DAEMON (C++17)                                 │
+│                                                                                               │
+│  ┌───────────────────────┐   Dynamic Hysteresis   ┌────────────────────────────────┐          │
+│  │ Tegra / Sysfs Monitor │ ─────────────────────> │ Quantization Governor          │          │
+│  │ (Direct Kernel Poll)  │                        │ (Hysteresis FP16 ⇄ INT8)       │          │
+│  └───────────────────────┘                        └────────────────────────────────┘          │
+│              │                                                     │                          │
+│              ▼                                                     ▼                          │
+│  ┌───────────────────────┐                        ┌────────────────────────────────┐          │
+│  │ EWMA Latency Tracker  │ ─────────────────────> │ Dual CUDA Stream Dispatcher    │          │
+│  │ (Pre-dispatch SLO)    │                        │ (SM Hardware Preemption)       │          │
+│  └───────────────────────┘                        └────────────────────────────────┘          │
+│                                                                    │                          │
+│  ┌───────────────────────┐                                         ▼                          │
+│  │ Zero-Copy Pinned Pool │ ─────────────────────> ┌────────────────────────────────┐          │
+│  │ (Recycling Arena)     │                        │ Real TensorRT Engine Pool      │          │
+│  │                       │                        │ - Dynamic Batching / Streams   │          │
+│  └───────────────────────┘                        │ - CUDA Graph Execution Replay  │          │
+│                                                   └────────────────────────────────┘          │
+└───────────────────────────────────────┬───────────────────────────────────────────────────────┘
+                                        │
+                    ┌───────────────────┴───────────────────┐
+                    ▼                                       ▼
+    ┌───────────────────────────────┐       ┌───────────────────────────────┐
+    │ Watchdog & Health Daemon      │       │ OpenTelemetry / MQTT Sync     │
+    │ (systemd sd_notify / heartbeat│       │ (Fleet Metrics Exporter)      │
+    └───────────────────────────────┘       └───────────────────────────────┘
 ```
 
 ---
