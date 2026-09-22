@@ -1,0 +1,4 @@
+Architecture,p50 (ms),p95 (ms),p99 (ms),SLO (<40ms) Violations
+NVIDIA Triton (Standard FP16 Edge),54.46,87.04,98.1,100.0%
+EdgeModelScheduler v1 (Basic Shedding),22.57,23.99,24.06,0.0%
+EdgeModelScheduler v2 (INT8 Fallback + Stream Isolation),16.49,17.61,17.67,0.0%
