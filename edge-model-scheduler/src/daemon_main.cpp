@@ -14,6 +14,8 @@
 #include "EmbeddedDashboard.hpp"
 #include "ModelCompiler.hpp"
 #include "NvtxProfiler.hpp"
+#include "TensorRTRunner.hpp"
+#include "ModelRegistry.hpp"
 
 #include <iostream>
 #include <memory>
@@ -140,6 +142,13 @@ int main(int argc, char* argv[]) {
 
     auto scheduler = std::make_shared<AdvancedScheduler>(monitor, mem_pool);
     scheduler->set_starvation_threshold_ms(hw_profile.starvation_threshold_ms);
+
+    // ── Model Registry & Hardware Inference Engine ──────────────
+    auto model_registry = std::make_shared<ModelRegistry>();
+    model_registry->load_from_manifest("model_manifest.json");
+
+    auto trt_runner = std::make_shared<TensorRTRunner>();
+    trt_runner->load_engine("default.engine");
 
     // ── IPC Server ──────────────────────────────────────────────
     uint32_t slot_size = static_cast<uint32_t>(
@@ -275,10 +284,9 @@ int main(int argc, char* argv[]) {
                         Priority p = static_cast<Priority>(hdr.priority);
                         auto target_dev = routing.target_device;
                         scheduler->submit_task(hdr.model_id, p,
-                            [payload, profiler_ewma, target_dev, dla_sched](void* /*buf*/) {
+                            [payload, profiler_ewma, target_dev, dla_sched, trt_runner](void* /*buf*/) {
                                 auto t0 = std::chrono::steady_clock::now();
-                                // Real inference would execute here on target accelerator
-                                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                                trt_runner->infer();
                                 auto t1 = std::chrono::steady_clock::now();
                                 float lat = std::chrono::duration<float, std::milli>(t1 - t0).count();
                                 profiler_ewma->record_execution_time(lat);

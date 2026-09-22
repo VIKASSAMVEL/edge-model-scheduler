@@ -10,6 +10,7 @@
 #include "QuantizationGovernor.hpp"
 #include "EWMAProfiler.hpp"
 #include "ModelRegistry.hpp"
+#include "TensorRTRunner.hpp"
 
 using namespace edge_scheduler;
 
@@ -136,6 +137,22 @@ void test_advanced_scheduler_dispatch() {
     std::cout << "PASSED." << std::endl;
 }
 
+void test_tensorrt_runner() {
+    std::cout << "[Test 6] Testing TensorRTRunner lifecycle and infer... ";
+    TensorRTRunner runner;
+    assert(!runner.is_loaded());
+    bool ok = runner.load_engine("default.engine");
+    assert(ok);
+    assert(runner.is_loaded());
+    assert(runner.num_bindings() >= 2);
+    assert(runner.input_size_bytes() > 0);
+    assert(runner.output_size_bytes() > 0);
+
+    bool inf_ok = runner.infer();
+    assert(inf_ok);
+    std::cout << "PASSED." << std::endl;
+}
+
 int main() {
     std::cout << "==================================================" << std::endl;
     std::cout << "🧪 Running EdgeModelScheduler C++ Native Unit Tests" << std::endl;
@@ -146,6 +163,7 @@ int main() {
     test_ewma_profiler();
     test_model_registry();
     test_advanced_scheduler_dispatch();
+    test_tensorrt_runner();
 
     std::cout << "==================================================" << std::endl;
     std::cout << "🎉 ALL UNIT TESTS PASSED SUCCESSFULLY!" << std::endl;

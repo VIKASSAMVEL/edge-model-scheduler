@@ -10,13 +10,17 @@ import os
 import time
 import pytest
 
-# Ensure build_native is in python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "build_native")))
+# Ensure newest build directory is in python path
+for bdir in ["build_v3", "build", "build_native"]:
+    p = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", bdir))
+    if os.path.exists(p) and any(f.startswith("edge_scheduler_py") for f in os.listdir(p)):
+        sys.path.insert(0, p)
+        break
 
 try:
     import edge_scheduler_py as es
     BINDINGS_AVAILABLE = True
-except ImportError:
+except Exception:
     BINDINGS_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(not BINDINGS_AVAILABLE, reason="edge_scheduler_py native module not compiled")
