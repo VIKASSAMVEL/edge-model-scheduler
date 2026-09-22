@@ -1,0 +1,46 @@
+# Build artifacts
+build/
+build*/
+**/build*/
+*.deb
+build_native/
+**/build_native/
+**/ros2_ws/build/
+**/ros2_ws/install/
+**/ros2_ws/log/
+bin/
+lib/
+*.so
+*.a
+*.o
+*.obj
+*.exe
+*.dylib
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Python virtual environment & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Model files & weights (large binaries)
+*.engine
+*.onnx
+*.pt
+*.bin
+*.weights
