@@ -1,0 +1,5 @@
+Metric,Baseline (Unmanaged FIFO),EdgeModelScheduler,Improvement
+High-Priority p50 (ms),54.94,28.47,48.2% faster
+High-Priority p95 (ms),67.13,36.12,46.2% faster
+High-Priority p99 (ms),86.09,36.74,57.3% faster
+High-Priority SLO Violations,77.0%,0.0%,77.0% drop in violations

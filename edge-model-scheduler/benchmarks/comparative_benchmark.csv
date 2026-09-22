@@ -1,0 +1,4 @@
+System,p50 Latency (ms),p95 Latency (ms),p99 Latency (ms),Safety SLO (<40ms) Violations
+Standard Multi-Threading (Naive),46.89,73.74,83.91,85.7%
+Triton-Style Edge Batching,38.3,70.82,72.06,18.0%
+EdgeModelScheduler (Ours),23.3,25.34,25.55,0.0%
