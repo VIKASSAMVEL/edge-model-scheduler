@@ -1,0 +1,68 @@
+[0.075s] Invoking command in '/workspace/ros2_ws/build/edge_scheduler_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /workspace/ros2_ws/src/edge_scheduler_ros2 -DCMAKE_INSTALL_PREFIX=/workspace/ros2_ws/install/edge_scheduler_ros2
+[0.389s] -- The C compiler identification is GNU 11.4.0
+[0.718s] -- The CXX compiler identification is GNU 11.4.0
+[0.770s] -- Detecting C compiler ABI info
+[1.559s] -- Detecting C compiler ABI info - done
+[1.610s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.612s] -- Detecting C compile features
+[1.614s] -- Detecting C compile features - done
+[1.738s] -- Detecting CXX compiler ABI info
+[2.544s] -- Detecting CXX compiler ABI info - done
+[2.560s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.560s] -- Detecting CXX compile features
+[2.561s] -- Detecting CXX compile features - done
+[2.596s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[2.718s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[2.992s] -- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+[3.060s] -- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[3.066s] -- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[3.080s] -- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[3.109s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[3.128s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[3.192s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[3.197s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[3.352s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[3.384s] -- Found FastRTPS: /opt/ros/humble/include  
+[3.426s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[3.469s] -- Looking for pthread.h
+[3.912s] -- Looking for pthread.h - found
+[3.917s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[4.331s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[4.334s] -- Found Threads: TRUE  
+[4.398s] -- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+[4.432s] -- Found cv_bridge: 3.2.1 (/opt/ros/humble/share/cv_bridge/cmake)
+[4.819s] -- Configuring done
+[5.185s] -- Generating done
+[5.401s] -- Build files have been written to: /workspace/ros2_ws/build/edge_scheduler_ros2
+[5.407s] Invoked command in '/workspace/ros2_ws/build/edge_scheduler_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /workspace/ros2_ws/src/edge_scheduler_ros2 -DCMAKE_INSTALL_PREFIX=/workspace/ros2_ws/install/edge_scheduler_ros2
+[5.419s] Invoking command in '/workspace/ros2_ws/build/edge_scheduler_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/ros2_ws/build/edge_scheduler_ros2 -- -j16 -l16
+[5.660s] [ 33%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/src/obstacle_arbiter_node.cpp.o
+[5.662s] [ 33%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/workspace/src/ResourceMonitor.cpp.o
+[5.667s] [ 50%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/workspace/src/Scheduler.cpp.o
+[5.673s] [ 66%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/workspace/src/AdvancedScheduler.cpp.o
+[5.678s] [ 83%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/workspace/src/TensorRTRunner.cpp.o
+[15.536s] [100%] Linking CXX executable obstacle_arbiter_node
+[20.019s] [100%] Built target obstacle_arbiter_node
+[20.043s] Invoked command in '/workspace/ros2_ws/build/edge_scheduler_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/ros2_ws/build/edge_scheduler_ros2 -- -j16 -l16
+[20.064s] Invoking command in '/workspace/ros2_ws/build/edge_scheduler_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /workspace/ros2_ws/build/edge_scheduler_ros2
+[20.070s] -- Install configuration: ""
+[20.080s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node
+[20.251s] -- Set runtime path of "/workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node" to ""
+[20.265s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch
+[20.295s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch/navigation_demo.launch.py
+[20.380s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/package_run_dependencies/edge_scheduler_ros2
+[20.495s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/parent_prefix_path/edge_scheduler_ros2
+[20.569s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.sh
+[20.604s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.dsv
+[20.695s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.sh
+[20.732s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.dsv
+[20.782s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.bash
+[20.822s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.sh
+[20.910s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.zsh
+[20.946s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.dsv
+[20.978s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.dsv
+[21.053s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/packages/edge_scheduler_ros2
+[21.114s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config.cmake
+[21.191s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config-version.cmake
+[21.260s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.xml
+[21.335s] Invoked command in '/workspace/ros2_ws/build/edge_scheduler_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /workspace/ros2_ws/build/edge_scheduler_ros2

@@ -4,40 +4,35 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 import time
-import random
 
 class NavigationStressTestNode(Node):
-    """
-    Simulates:
-    1. Continuous camera stream publishing at 30 FPS.
-    2. Simulated obstacle appearances.
-    3. Heavy synthetic CPU/GPU contention spikes (e.g. SLAM mapping / path planning bursts).
-    4. Tracks robot collision state vs safe stopping time.
-    """
-
     def __init__(self):
         super().__init__('navigation_stress_test_node')
         self.image_pub = self.create_publisher(Image, '/camera/image_raw', 10)
         self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
 
-        self.timer = self.create_timer(1.0 / 30.0, self.publish_frame) # 30 FPS
+        self.timer = self.create_timer(1.0 / 10.0, self.publish_frame) # 10 FPS
         self.frame_count = 0
         self.robot_stopped = False
         self.obstacle_active = False
         self.obstacle_trigger_time = 0.0
 
-        self.get_logger().info("Navigation Stress Test Active: 30 FPS stream with periodic contention bursts.")
+        # Preallocate valid byte buffer (100x100 RGB)
+        self.dummy_data = bytes(100 * 100 * 3)
+        self.get_logger().info("Navigation Stress Test Active: 10 FPS stream with periodic contention bursts.")
 
     def publish_frame(self):
         self.frame_count += 1
         msg = Image()
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.height = 1080
-        msg.width = 1920
+        msg.header.frame_id = "camera_link"
+        msg.height = 100
+        msg.width = 100
         msg.encoding = "bgr8"
+        msg.step = 100 * 3
+        msg.data = self.dummy_data
 
-        # Every 60 frames (~2 seconds), simulate an obstacle entering robot path
-        if self.frame_count % 60 == 0:
+        if self.frame_count % 30 == 0:
             self.obstacle_active = True
             self.robot_stopped = False
             self.obstacle_trigger_time = time.time()

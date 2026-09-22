@@ -6,19 +6,18 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 
-# Include EdgeModelScheduler Core headers
 include_directories(
   include
   ../../../include
 )
 
-# Core EdgeModelScheduler sources
 set(SCHEDULER_SOURCES
   ../../../src/ResourceMonitor.cpp
   ../../../src/Scheduler.cpp
@@ -26,7 +25,6 @@ set(SCHEDULER_SOURCES
   ../../../src/TensorRTRunner.cpp
 )
 
-# ROS 2 Obstacle Arbiter Node
 add_executable(obstacle_arbiter_node
   src/obstacle_arbiter_node.cpp
   ${SCHEDULER_SOURCES}
@@ -44,6 +42,11 @@ target_link_libraries(obstacle_arbiter_node pthread)
 
 install(TARGETS
   obstacle_arbiter_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  src/navigation_stress_test.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
