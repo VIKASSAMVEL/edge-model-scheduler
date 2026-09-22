@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  ros2_arbiter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ros2_humble
+    image: edge_scheduler_ros2:humble
+    container_name: edge_scheduler_container
+    network_mode: host
+    ipc: host
+    privileged: true
+    volumes:
+      - ..:/workspace/edge-model-scheduler
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               cd /workspace/edge-model-scheduler/ros2_ws &&
+               colcon build --symlink-install &&
+               source install/setup.bash &&
+               echo '[ROS2] Build Successful! Launching obstacle_arbiter_node...' &&
+               ros2 run edge_scheduler_ros2 obstacle_arbiter_node"

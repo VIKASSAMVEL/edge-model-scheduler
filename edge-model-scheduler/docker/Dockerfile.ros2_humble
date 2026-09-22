@@ -1,0 +1,23 @@
+FROM osrf/ros:humble-desktop
+
+# Set environment
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-c"]
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    python3-pip \
+    python3-colcon-common-extensions \
+    ros-humble-cv-bridge \
+    ros-humble-sensor-msgs \
+    ros-humble-geometry-msgs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup workspace
+WORKDIR /workspace/edge-model-scheduler
+
+# Default entrypoint
+CMD ["/bin/bash"]
