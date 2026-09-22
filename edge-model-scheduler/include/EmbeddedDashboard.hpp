@@ -12,6 +12,7 @@
 #ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <unistd.h>
 #include <fcntl.h>
 #else
@@ -150,6 +151,9 @@ private:
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 continue;
             }
+
+            int nodelay_flag = 1;
+            setsockopt(client_fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&nodelay_flag), sizeof(nodelay_flag));
 
             handle_client(client_fd);
         }

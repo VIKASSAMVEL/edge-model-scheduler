@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <vector>
-#include <deque>
 #include <string>
 #include <chrono>
 #include <mutex>
@@ -26,7 +25,7 @@ struct SlackRequest {
     size_t buffer_size{0};
     std::function<void(bool success, float latency_ms)> callback;
 
-    float compute_slack_ms(std::chrono::steady_clock::time_point now) const {
+    inline float compute_slack_ms(std::chrono::steady_clock::time_point now) const {
         float elapsed_ms = std::chrono::duration<float, std::milli>(now - ingress_time).count();
         return deadline_ms - elapsed_ms - expected_exec_ms;
     }
@@ -52,7 +51,10 @@ struct SlackBatcherStats {
 class SlackBatcher {
 public:
     explicit SlackBatcher(uint32_t max_batch_size = 4, float max_coalesce_window_ms = 5.0f)
-        : max_batch_size_(max_batch_size), max_coalesce_window_ms_(max_coalesce_window_ms) {}
+        : max_batch_size_(max_batch_size), max_coalesce_window_ms_(max_coalesce_window_ms)
+    {
+        pending_queue_.reserve(128); // Pre-allocate contiguous memory to avoid heap reallocation
+    }
 
     // Submit a request. If slack is already negative (impossible to meet SLO), sheds instantly!
     bool submit(SlackRequest req) {
@@ -75,58 +77,77 @@ public:
         return true;
     }
 
-    // Attempt to form the next optimal batch or shed any expired frames in queue
-    bool try_form_batch(BatchJob& out_batch, float current_time_budget_ms = 100.0f) {
+    // Attempt to form the next optimal batch with O(N) single-pass selection (No std::sort)
+    bool try_form_batch(BatchJob& out_batch, float /*current_time_budget_ms*/ = 100.0f) {
         std::lock_guard<std::mutex> lock(mutex_);
         if (pending_queue_.empty()) return false;
 
         auto now = std::chrono::steady_clock::now();
 
-        // 1. Prune expired frames from pending queue (Pre-execution shedding)
-        auto it = pending_queue_.begin();
-        while (it != pending_queue_.end()) {
-            float slack = it->compute_slack_ms(now);
+        // 1. Single-pass pre-execution shedding & prune expired frames
+        size_t write_pos = 0;
+        for (size_t i = 0; i < pending_queue_.size(); ++i) {
+            float slack = pending_queue_[i].compute_slack_ms(now);
             if (slack < 0.0f) {
                 stats_.stale_frames_shed.fetch_add(1, std::memory_order_relaxed);
-                if (it->callback) {
-                    it->callback(false, std::chrono::duration<float, std::milli>(now - it->ingress_time).count());
+                if (pending_queue_[i].callback) {
+                    pending_queue_[i].callback(false, std::chrono::duration<float, std::milli>(now - pending_queue_[i].ingress_time).count());
                 }
-                it = pending_queue_.erase(it);
             } else {
-                ++it;
+                if (write_pos != i) {
+                    pending_queue_[write_pos] = std::move(pending_queue_[i]);
+                }
+                write_pos++;
             }
         }
+        pending_queue_.resize(write_pos);
 
         if (pending_queue_.empty()) return false;
 
-        // 2. Select highest priority / lowest slack anchor request
-        std::sort(pending_queue_.begin(), pending_queue_.end(),
-            [&now](const SlackRequest& a, const SlackRequest& b) {
-                if (a.priority != b.priority) return a.priority < b.priority;
-                return a.compute_slack_ms(now) < b.compute_slack_ms(now);
-            });
+        // 2. O(N) single-pass minimum scan for anchor request (highest priority / lowest slack)
+        size_t anchor_idx = 0;
+        float min_slack = pending_queue_[0].compute_slack_ms(now);
+        uint32_t best_priority = pending_queue_[0].priority;
 
-        auto& anchor = pending_queue_.front();
-        std::string target_model = anchor.model_name;
-        float anchor_slack = anchor.compute_slack_ms(now);
+        for (size_t i = 1; i < pending_queue_.size(); ++i) {
+            uint32_t prio = pending_queue_[i].priority;
+            float slack = pending_queue_[i].compute_slack_ms(now);
+            if (prio < best_priority || (prio == best_priority && slack < min_slack)) {
+                best_priority = prio;
+                min_slack = slack;
+                anchor_idx = i;
+            }
+        }
+
+        std::string target_model = pending_queue_[anchor_idx].model_name;
 
         out_batch.model_name = target_model;
         out_batch.request_ids.clear();
         out_batch.buffers.clear();
-        out_batch.min_slack_ms = anchor_slack;
+        out_batch.min_slack_ms = min_slack;
         out_batch.dispatch_time = now;
 
-        // 3. Coalesce compatible requests into batch
-        it = pending_queue_.begin();
-        while (it != pending_queue_.end() && out_batch.request_ids.size() < max_batch_size_) {
-            if (it->model_name == target_model) {
-                out_batch.request_ids.push_back(it->request_id);
-                out_batch.buffers.push_back(it->buffer);
-                it = pending_queue_.erase(it);
-            } else {
-                ++it;
+        // 3. Coalesce matching requests in contiguous pass
+        std::vector<bool> consumed(pending_queue_.size(), false);
+        for (size_t i = 0; i < pending_queue_.size() && out_batch.request_ids.size() < max_batch_size_; ++i) {
+            if (pending_queue_[i].model_name == target_model) {
+                out_batch.request_ids.push_back(pending_queue_[i].request_id);
+                out_batch.buffers.push_back(pending_queue_[i].buffer);
+                consumed[i] = true;
             }
         }
+
+        // 4. In-place compacting
+        write_pos = 0;
+        for (size_t i = 0; i < pending_queue_.size(); ++i) {
+            if (!consumed[i]) {
+                if (write_pos != i) {
+                    pending_queue_[write_pos] = std::move(pending_queue_[i]);
+                }
+                write_pos++;
+            }
+        }
+        pending_queue_.resize(write_pos);
 
         out_batch.batch_size = static_cast<uint32_t>(out_batch.request_ids.size());
         stats_.total_dispatched.fetch_add(out_batch.batch_size, std::memory_order_relaxed);
@@ -162,7 +183,7 @@ private:
     float max_coalesce_window_ms_{5.0f};
     mutable std::mutex mutex_;
     std::condition_variable cv_;
-    std::deque<SlackRequest> pending_queue_;
+    std::vector<SlackRequest> pending_queue_;
     SlackBatcherStats stats_;
 };
 

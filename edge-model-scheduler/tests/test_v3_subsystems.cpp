@@ -31,7 +31,7 @@ void test_shm_ring_buffer() {
 
     // Publish 4 messages
     for (uint32_t i = 0; i < 4; ++i) {
-        uint64_t seq;
+        uint64_t seq = 0;
         void* slot = ring.try_claim_write_slot(seq);
         assert(slot != nullptr);
 
@@ -49,9 +49,9 @@ void test_shm_ring_buffer() {
 
     // Consume all 4
     for (uint32_t i = 0; i < 4; ++i) {
-        uint64_t seq;
-        uint32_t size;
-        uint64_t ts;
+        uint64_t seq = 0;
+        uint32_t size = 0;
+        uint64_t ts = 0;
         const void* data = ring.try_consume(seq, size, ts);
         assert(data != nullptr);
 
@@ -66,9 +66,9 @@ void test_shm_ring_buffer() {
     assert(ring.pending_count() == 0);
 
     // Empty ring — consume should return nullptr
-    uint64_t seq;
-    uint32_t sz;
-    uint64_t ts;
+    uint64_t seq = 0;
+    uint32_t sz = 0;
+    uint64_t ts = 0;
     assert(ring.try_consume(seq, sz, ts) == nullptr);
 
     std::cout << "PASSED." << std::endl;
@@ -84,20 +84,20 @@ void test_shm_ring_backpressure() {
 
     // Fill all 4 slots
     for (uint32_t i = 0; i < 4; ++i) {
-        uint64_t seq;
+        uint64_t seq = 0;
         void* slot = ring.try_claim_write_slot(seq);
         assert(slot != nullptr);
         ring.commit_publish(seq, 4, 0);
     }
 
     // 5th publish should fail (ring full)
-    uint64_t seq;
+    uint64_t seq = 0;
     void* slot = ring.try_claim_write_slot(seq);
     assert(slot == nullptr);
 
     // Consume one to free a slot
-    uint32_t sz;
-    uint64_t ts;
+    uint32_t sz = 0;
+    uint64_t ts = 0;
     const void* data = ring.try_consume(seq, sz, ts);
     assert(data != nullptr);
     ring.commit_consume(seq);

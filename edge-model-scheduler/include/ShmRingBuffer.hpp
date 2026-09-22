@@ -13,6 +13,27 @@
 #include <unistd.h>
 #endif
 
+#include <thread>
+
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+
+// Portable micro-architectural CPU pause/relax helper for spin-loops
+inline void cpu_relax() noexcept {
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    #if defined(_MSC_VER)
+        _mm_pause();
+    #else
+        __builtin_ia32_pause();
+    #endif
+#elif defined(__aarch64__) || defined(__arm__)
+    asm volatile("yield" ::: "memory");
+#else
+    std::this_thread::yield();
+#endif
+}
+
 namespace edge_scheduler {
 
 /**
@@ -129,7 +150,7 @@ public:
         } else {
             // Spin until producer has initialized
             while (ctrl_->flags.load(std::memory_order_acquire) == 0) {
-                // busy wait (consumer connects after producer)
+                cpu_relax();
             }
             if (ctrl_->version != SHM_RING_VERSION) {
                 throw std::runtime_error("SHM version mismatch");
@@ -183,6 +204,7 @@ public:
      * Returns nullptr if ring is full (back-pressure).
      */
     void* try_claim_write_slot(uint64_t& out_seq) {
+        out_seq = 0;
         uint64_t seq = ctrl_->write_seq.load(std::memory_order_relaxed);
         for (;;) {
             uint32_t idx = static_cast<uint32_t>(seq) & slot_mask_;
@@ -201,7 +223,8 @@ public:
                 // Ring full — consumer hasn't caught up
                 return nullptr;
             } else {
-                // Another producer advanced — reload
+                // Another producer advanced — relax and reload
+                cpu_relax();
                 seq = ctrl_->write_seq.load(std::memory_order_relaxed);
             }
         }
@@ -222,6 +245,9 @@ public:
      * Caller reads the buffer, then calls commit_consume().
      */
     const void* try_consume(uint64_t& out_seq, uint32_t& out_size, uint64_t& out_ts) {
+        out_seq = 0;
+        out_size = 0;
+        out_ts = 0;
         uint64_t seq = ctrl_->read_seq.load(std::memory_order_relaxed);
         for (;;) {
             uint32_t idx = static_cast<uint32_t>(seq) & slot_mask_;
@@ -241,6 +267,7 @@ public:
                 // Empty — nothing to consume
                 return nullptr;
             } else {
+                cpu_relax();
                 seq = ctrl_->read_seq.load(std::memory_order_relaxed);
             }
         }

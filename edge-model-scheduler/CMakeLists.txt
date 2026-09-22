@@ -6,7 +6,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic -O3)
+  add_compile_options(
+    -Wall -Wextra
+    -Wno-unused-parameter
+    -Wno-unused-variable
+    -Wno-unused-result
+    -O3
+    -funroll-loops
+    -fomit-frame-pointer
+    -fno-plt
+    -ffast-math
+  )
 endif()
 
 # ── Optional: CUDA ──────────────────────────────────────────
