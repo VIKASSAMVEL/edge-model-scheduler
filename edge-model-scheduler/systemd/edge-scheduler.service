@@ -1,0 +1,48 @@
+[Unit]
+Description=EdgeModelScheduler - Real-Time Edge AI Inference Daemon
+Documentation=https://github.com/edge-model-scheduler/docs
+After=network.target nvidia-persistenced.service
+Wants=nvidia-persistenced.service
+ConditionPathExists=/etc/edge-scheduler/
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/edge-scheduler-daemon --config /etc/edge-scheduler/hardware_profile.yaml
+ExecStartPre=/usr/local/bin/edge-scheduler calibrate --output /etc/edge-scheduler/hardware_profile.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Watchdog: daemon must ping sd_notify(WATCHDOG=1) within this interval
+WatchdogSec=5s
+
+# Auto-restart on crash
+Restart=always
+RestartSec=1
+StartLimitBurst=5
+StartLimitIntervalSec=30
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/dev/shm /var/log/edge-scheduler /etc/edge-scheduler
+SupplementaryGroups=video gpu
+
+# Resource limits
+LimitNOFILE=65536
+LimitMEMLOCK=infinity
+MemoryMax=2G
+CPUQuota=200%
+
+# GPU access
+DeviceAllow=/dev/nvidia0 rw
+DeviceAllow=/dev/nvidiactl rw
+DeviceAllow=/dev/nvidia-uvm rw
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=edge-scheduler
+
+[Install]
+WantedBy=multi-user.target
