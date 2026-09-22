@@ -12,6 +12,8 @@
 #include "BatteryQosGovernor.hpp"
 #include "DlaCoScheduler.hpp"
 #include "EmbeddedDashboard.hpp"
+#include "ModelCompiler.hpp"
+#include "NvtxProfiler.hpp"
 
 #include <iostream>
 #include <memory>
@@ -40,6 +42,10 @@ int main(int argc, char* argv[]) {
     std::string shm_name = "/edge_scheduler_ipc";
     bool run_calibration = false;
     std::string calibration_output;
+    bool run_build = false;
+    std::string build_model_path;
+    std::string build_output_dir = "./models";
+    std::string build_target = "orin_agx";
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
@@ -51,15 +57,50 @@ int main(int argc, char* argv[]) {
             calibration_output = argv[++i];
         } else if (arg == "--shm" && i + 1 < argc) {
             shm_name = argv[++i];
+        } else if (arg == "build") {
+            run_build = true;
+        } else if (arg == "--model" && i + 1 < argc) {
+            build_model_path = argv[++i];
+        } else if (arg == "--output-dir" && i + 1 < argc) {
+            build_output_dir = argv[++i];
+        } else if (arg == "--target" && i + 1 < argc) {
+            build_target = argv[++i];
         } else if (arg == "--help" || arg == "-h") {
-            std::cout << "Usage: edge-scheduler-daemon [OPTIONS]\n"
-                      << "  --config PATH    Hardware profile YAML (default: /etc/edge-scheduler/hardware_profile.yaml)\n"
-                      << "  --shm NAME       POSIX SHM ring buffer name (default: /edge_scheduler_ipc)\n"
-                      << "  calibrate        Run hardware auto-calibration\n"
-                      << "  --output PATH    Calibration output YAML path\n"
+            std::cout << "Usage: edge-scheduler-daemon [COMMAND / OPTIONS]\n\n"
+                      << "Daemon Options:\n"
+                      << "  --config PATH        Hardware profile YAML (default: /etc/edge-scheduler/hardware_profile.yaml)\n"
+                      << "  --shm NAME           POSIX SHM ring buffer name (default: /edge_scheduler_ipc)\n\n"
+                      << "Commands:\n"
+                      << "  calibrate            Run hardware auto-calibration\n"
+                      << "    --output PATH      Calibration output YAML path\n"
+                      << "  build                Compile ONNX model to paired FP16/INT8 engines & manifest\n"
+                      << "    --model PATH       Path to input .onnx model\n"
+                      << "    --output-dir DIR   Directory to output engines & model_manifest.json\n"
+                      << "    --target PLATFORM  Target SoC (orin_agx, orin_nx, orin_nano)\n"
                       << std::endl;
             return 0;
         }
+    }
+
+    // ── Build mode ──────────────────────────────────────────────
+    if (run_build) {
+        std::cout << "[ModelCompiler] Compiling model: " << (build_model_path.empty() ? "yolov8.onnx" : build_model_path) << "\n";
+        ModelCompilationConfig cfg;
+        cfg.model_path = build_model_path;
+        cfg.model_name = "yolov8_detector";
+        cfg.output_dir = build_output_dir;
+        cfg.target_platform = build_target;
+        cfg.enable_dla = (build_target == "orin_agx" || build_target == "orin_nx");
+
+        ModelCompiler compiler(cfg);
+        auto manifest = compiler.compile();
+
+        std::cout << "[ModelCompiler] DLA Compatibility: " << manifest.dla_compatibility_percent << "%\n";
+        std::cout << "[ModelCompiler] Recommended Accelerator: " << manifest.recommended_device << "\n";
+        std::cout << "[ModelCompiler] Expected Latency: FP16=" << manifest.expected_fp16_latency_ms
+                  << "ms, INT8=" << manifest.expected_int8_latency_ms << "ms\n";
+        std::cout << "[ModelCompiler] Manifest written to: " << build_output_dir << "/model_manifest.json\n";
+        return 0;
     }
 
     // ── Calibration mode ────────────────────────────────────────

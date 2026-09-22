@@ -20,6 +20,7 @@
 #include "BatteryQosGovernor.hpp"
 #include "DlaCoScheduler.hpp"
 #include "EmbeddedDashboard.hpp"
+#include "ModelCompiler.hpp"
 
 namespace py = pybind11;
 using namespace edge_scheduler;
@@ -308,4 +309,36 @@ PYBIND11_MODULE(edge_scheduler_py, m) {
         .def("stop", &EmbeddedDashboard::stop)
         .def("is_running", &EmbeddedDashboard::is_running)
         .def("port", &EmbeddedDashboard::port);
+
+    // Model Compiler (Option A)
+    py::class_<ModelCompilationConfig>(m, "ModelCompilationConfig")
+        .def(py::init<>())
+        .def_readwrite("model_path", &ModelCompilationConfig::model_path)
+        .def_readwrite("model_name", &ModelCompilationConfig::model_name)
+        .def_readwrite("output_dir", &ModelCompilationConfig::output_dir)
+        .def_readwrite("target_platform", &ModelCompilationConfig::target_platform)
+        .def_readwrite("enable_dla", &ModelCompilationConfig::enable_dla)
+        .def_readwrite("generate_int8", &ModelCompilationConfig::generate_int8)
+        .def_readwrite("max_batch_size", &ModelCompilationConfig::max_batch_size)
+        .def_readwrite("workspace_mb", &ModelCompilationConfig::workspace_mb)
+        .def_readwrite("target_slo_ms", &ModelCompilationConfig::target_slo_ms);
+
+    py::class_<ModelManifest>(m, "ModelManifest")
+        .def(py::init<>())
+        .def_readwrite("model_name", &ModelManifest::model_name)
+        .def_readwrite("platform", &ModelManifest::platform)
+        .def_readwrite("fp16_engine_path", &ModelManifest::fp16_engine_path)
+        .def_readwrite("int8_engine_path", &ModelManifest::int8_engine_path)
+        .def_readwrite("dla_compatibility_percent", &ModelManifest::dla_compatibility_percent)
+        .def_readwrite("recommended_device", &ModelManifest::recommended_device)
+        .def_readwrite("expected_fp16_latency_ms", &ModelManifest::expected_fp16_latency_ms)
+        .def_readwrite("expected_int8_latency_ms", &ModelManifest::expected_int8_latency_ms)
+        .def_readwrite("default_slo_ms", &ModelManifest::default_slo_ms)
+        .def("to_json", &ModelManifest::to_json);
+
+    py::class_<ModelCompiler>(m, "ModelCompiler")
+        .def(py::init<ModelCompilationConfig>(), py::arg("config") = ModelCompilationConfig{})
+        .def("compile", &ModelCompiler::compile, py::arg("mock_layers") = std::vector<std::string>{"Conv2d", "BatchNorm", "Relu"}, py::arg("inputs") = std::vector<TensorSpec>{}, py::arg("outputs") = std::vector<TensorSpec>{})
+        .def("generate_trtexec_command", &ModelCompiler::generate_trtexec_command, py::arg("int8_mode") = false)
+        .def("is_dla_supported", &ModelCompiler::is_dla_supported);
 }
