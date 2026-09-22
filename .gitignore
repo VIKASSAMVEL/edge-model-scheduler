@@ -44,3 +44,8 @@ env/
 *.pt
 *.bin
 *.weights
+
+# Internal plans, agent framework & personal strategy
+vikas_50lpa_strategy.md
+production-phase.md
+.agents/
