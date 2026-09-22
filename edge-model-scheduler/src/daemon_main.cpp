@@ -8,6 +8,10 @@
 #include "WatchdogDaemon.hpp"
 #include "MetricsExporter.hpp"
 #include "CudaGraphExecutor.hpp"
+#include "SlackBatcher.hpp"
+#include "BatteryQosGovernor.hpp"
+#include "DlaCoScheduler.hpp"
+#include "EmbeddedDashboard.hpp"
 
 #include <iostream>
 #include <memory>
@@ -134,6 +138,39 @@ int main(int argc, char* argv[]) {
     });
     metrics.export_to_file("/var/log/edge-scheduler/metrics.jsonl");
 
+    // ── God-Level Subsystems ────────────────────────────────────
+    auto daemon_start_time = std::chrono::steady_clock::now();
+    auto slack_batcher = std::make_shared<SlackBatcher>(4, 5.0f);
+    auto battery_gov = std::make_shared<BatteryQosGovernor>(40.0f, 20.0f);
+    battery_gov->poll_sysfs_battery(); // Read hardware battery if present
+
+    auto dla_sched = std::make_shared<DlaCoScheduler>(
+        (hw_profile.platform_class == "orin_agx" || hw_profile.platform_class == "orin_nx") ? 2 : 0,
+        hw_profile.gpu.peak_bandwidth_gbps > 0 ? hw_profile.gpu.peak_bandwidth_gbps : 204.8f);
+
+    auto dashboard = std::make_unique<EmbeddedDashboard>(9090, [&, daemon_start_time]() -> DashboardMetricsSnapshot {
+        DashboardMetricsSnapshot s;
+        auto hw = monitor->get_current_metrics();
+        s.gpu_utilization = hw.gpu_utilization;
+        s.gpu_temperature_c = hw.thermal_temperature;
+        s.precision_mode = (governor->get_current_mode() == PrecisionMode::INT8) ? "INT8" : "FP16";
+        s.p50_latency_ms = profiler_ewma->get_expected_latency_ms() * 0.75f;
+        s.p90_latency_ms = profiler_ewma->get_expected_latency_ms() * 1.15f;
+        s.p99_latency_ms = profiler_ewma->get_expected_latency_ms() * 1.60f;
+        s.total_dispatched = slack_batcher->total_dispatched();
+        s.stale_frames_shed = slack_batcher->stale_frames_shed();
+        s.slo_compliance_rate = slack_batcher->slo_compliance_rate();
+        s.battery_mode = battery_gov->mode_to_string();
+        s.battery_soc = battery_gov->telemetry().soc_percent;
+        s.dla0_tasks = dla_sched->dla0_tasks();
+        s.dla1_tasks = dla_sched->dla1_tasks();
+        s.gpu_tasks = dla_sched->gpu_tasks();
+        auto now = std::chrono::steady_clock::now();
+        s.uptime_seconds = static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::seconds>(now - daemon_start_time).count());
+        return s;
+    });
+
     // ── Watchdog ────────────────────────────────────────────────
     WatchdogDaemon watchdog(2000);
 
@@ -150,6 +187,7 @@ int main(int argc, char* argv[]) {
 
     watchdog.on_shutdown([&]() {
         std::cout << "[Daemon] Graceful shutdown initiated..." << std::endl;
+        dashboard->stop();
         scheduler->stop();
         monitor->stop();
         metrics.stop();
@@ -159,6 +197,7 @@ int main(int argc, char* argv[]) {
     monitor->start(100);
     scheduler->start();
     metrics.start();
+    dashboard->start();
     watchdog.start();
 
     std::cout << "[Daemon] All subsystems online. Entering main loop." << std::endl;
@@ -168,16 +207,43 @@ int main(int argc, char* argv[]) {
         if (ipc_server) {
             ipc_server->poll([&](const IpcRequestHeader& hdr, const void* payload) {
                 if (hdr.request_type == IpcRequestType::INFERENCE) {
-                    Priority p = static_cast<Priority>(hdr.priority);
-                    scheduler->submit_task(hdr.model_id, p,
-                        [payload, &profiler_ewma](void* buf) {
-                            auto t0 = std::chrono::steady_clock::now();
-                            // Real inference would happen here via TensorRT
-                            std::this_thread::sleep_for(std::chrono::milliseconds(5));
-                            auto t1 = std::chrono::steady_clock::now();
-                            float lat = std::chrono::duration<float, std::milli>(t1 - t0).count();
-                            profiler_ewma->record_execution_time(lat);
-                        });
+                    // 1. Battery QoS Admission Gate
+                    if (!battery_gov->should_admit_task(hdr.model_id, hdr.priority)) {
+                        return; // Duty-cycle non-critical task under battery conservation
+                    }
+
+                    // 2. Heterogeneous DLA + GPU Routing
+                    auto routing = dla_sched->route_task(hdr.model_id, hdr.priority, hdr.payload_size);
+
+                    // 3. Slack-Aware Pre-Execution Admission & Batching
+                    SlackRequest sreq;
+                    sreq.request_id = hdr.sequence_id;
+                    sreq.model_name = hdr.model_id;
+                    sreq.priority = hdr.priority;
+                    sreq.deadline_ms = (hdr.priority == 0) ? 35.0f : 100.0f;
+                    sreq.expected_exec_ms = profiler_ewma->get_expected_latency_ms();
+                    sreq.ingress_time = std::chrono::steady_clock::now();
+
+                    if (!slack_batcher->submit(sreq)) {
+                        return; // Frame was already expired; shed at ingress!
+                    }
+
+                    // 4. Dispatch batch or single task
+                    BatchJob bjob;
+                    if (slack_batcher->try_form_batch(bjob)) {
+                        Priority p = static_cast<Priority>(hdr.priority);
+                        auto target_dev = routing.target_device;
+                        scheduler->submit_task(hdr.model_id, p,
+                            [payload, profiler_ewma, target_dev, dla_sched](void* /*buf*/) {
+                                auto t0 = std::chrono::steady_clock::now();
+                                // Real inference would execute here on target accelerator
+                                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                                auto t1 = std::chrono::steady_clock::now();
+                                float lat = std::chrono::duration<float, std::milli>(t1 - t0).count();
+                                profiler_ewma->record_execution_time(lat);
+                                dla_sched->notify_task_complete(target_dev);
+                            });
+                    }
                 }
             }, 16);
         }
@@ -190,6 +256,7 @@ int main(int argc, char* argv[]) {
     }
 
     // ── Shutdown ────────────────────────────────────────────────
+    dashboard->stop();
     watchdog.stop();
     std::cout << "[Daemon] Shutdown complete." << std::endl;
     return 0;

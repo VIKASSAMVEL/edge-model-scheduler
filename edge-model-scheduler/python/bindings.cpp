@@ -16,6 +16,10 @@
 #include "MetricsExporter.hpp"
 #include "IpcTransport.hpp"
 #include "ShmRingBuffer.hpp"
+#include "SlackBatcher.hpp"
+#include "BatteryQosGovernor.hpp"
+#include "DlaCoScheduler.hpp"
+#include "EmbeddedDashboard.hpp"
 
 namespace py = pybind11;
 using namespace edge_scheduler;
@@ -230,4 +234,78 @@ PYBIND11_MODULE(edge_scheduler_py, m) {
         .def("start", &MetricsExporter::start)
         .def("stop", &MetricsExporter::stop)
         .def("export_count", &MetricsExporter::export_count);
+
+    // ═════════════════════════════════════════════════════════
+    // God-Level Subsystems: SlackBatcher, BatteryQoS, DLA, Dashboard
+    // ═════════════════════════════════════════════════════════
+
+    // SlackBatcher
+    py::class_<SlackBatcher, std::shared_ptr<SlackBatcher>>(m, "SlackBatcher")
+        .def(py::init<uint32_t, float>(), py::arg("max_batch_size") = 4, py::arg("max_coalesce_window_ms") = 5.0f)
+        .def("pending_count", &SlackBatcher::pending_count)
+        .def("total_submitted", &SlackBatcher::total_submitted)
+        .def("total_dispatched", &SlackBatcher::total_dispatched)
+        .def("stale_frames_shed", &SlackBatcher::stale_frames_shed)
+        .def("batches_created", &SlackBatcher::batches_created)
+        .def("slo_compliance_rate", &SlackBatcher::slo_compliance_rate);
+
+    // Battery QoS Governor
+    py::enum_<BatteryQosMode>(m, "BatteryQosMode")
+        .value("EXTERNAL_POWER", BatteryQosMode::EXTERNAL_POWER)
+        .value("NORMAL", BatteryQosMode::NORMAL)
+        .value("ECO", BatteryQosMode::ECO)
+        .value("CRITICAL_RTH", BatteryQosMode::CRITICAL_RTH)
+        .export_values();
+
+    py::class_<BatteryTelemetry>(m, "BatteryTelemetry")
+        .def(py::init<>())
+        .def_readwrite("soc_percent", &BatteryTelemetry::soc_percent)
+        .def_readwrite("voltage_v", &BatteryTelemetry::voltage_v)
+        .def_readwrite("current_a", &BatteryTelemetry::current_a)
+        .def_readwrite("power_w", &BatteryTelemetry::power_w)
+        .def_readwrite("is_charging", &BatteryTelemetry::is_charging);
+
+    py::class_<BatteryQosGovernor, std::shared_ptr<BatteryQosGovernor>>(m, "BatteryQosGovernor")
+        .def(py::init<float, float>(), py::arg("eco_threshold") = 40.0f, py::arg("critical_threshold") = 20.0f)
+        .def("update_telemetry", &BatteryQosGovernor::update_telemetry, py::arg("soc"), py::arg("is_charging") = false, py::arg("voltage") = 16.8f, py::arg("current") = 2.5f)
+        .def("current_mode", &BatteryQosGovernor::current_mode)
+        .def("mode_to_string", &BatteryQosGovernor::mode_to_string)
+        .def("telemetry", &BatteryQosGovernor::telemetry)
+        .def("should_admit_task", &BatteryQosGovernor::should_admit_task)
+        .def("should_force_int8", &BatteryQosGovernor::should_force_int8);
+
+    // DLA Co-Scheduler
+    py::enum_<AccelDevice>(m, "AccelDevice")
+        .value("GPU", AccelDevice::GPU)
+        .value("DLA0", AccelDevice::DLA0)
+        .value("DLA1", AccelDevice::DLA1)
+        .value("HYBRID", AccelDevice::HYBRID)
+        .export_values();
+
+    py::class_<RoutingDecision>(m, "RoutingDecision")
+        .def(py::init<>())
+        .def_readwrite("target_device", &RoutingDecision::target_device)
+        .def_readwrite("reason", &RoutingDecision::reason)
+        .def_readwrite("estimated_latency_ms", &RoutingDecision::estimated_latency_ms)
+        .def_readwrite("needs_memory_barrier", &RoutingDecision::needs_memory_barrier);
+
+    py::class_<DlaCoScheduler, std::shared_ptr<DlaCoScheduler>>(m, "DlaCoScheduler")
+        .def(py::init<uint32_t, float>(), py::arg("available_dla_cores") = 2, py::arg("max_lpddr5_bandwidth_gbps") = 204.8f)
+        .def("route_task", &DlaCoScheduler::route_task, py::arg("model_name"), py::arg("priority"), py::arg("input_bytes"), py::arg("has_custom_ops") = false, py::arg("is_pure_cnn") = true)
+        .def("notify_task_complete", &DlaCoScheduler::notify_task_complete)
+        .def("update_memory_bus_load", &DlaCoScheduler::update_memory_bus_load)
+        .def("available_dla_cores", &DlaCoScheduler::available_dla_cores)
+        .def("gpu_tasks", &DlaCoScheduler::gpu_tasks)
+        .def("dla0_tasks", &DlaCoScheduler::dla0_tasks)
+        .def("dla1_tasks", &DlaCoScheduler::dla1_tasks)
+        .def("bus_stalls_avoided", &DlaCoScheduler::bus_stalls_avoided)
+        .def("device_to_string", &DlaCoScheduler::device_to_string);
+
+    // Embedded Dashboard
+    py::class_<EmbeddedDashboard>(m, "EmbeddedDashboard")
+        .def(py::init<uint16_t>(), py::arg("port") = 9090)
+        .def("start", &EmbeddedDashboard::start)
+        .def("stop", &EmbeddedDashboard::stop)
+        .def("is_running", &EmbeddedDashboard::is_running)
+        .def("port", &EmbeddedDashboard::port);
 }

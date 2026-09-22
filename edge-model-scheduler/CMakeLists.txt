@@ -85,6 +85,10 @@ add_executable(test_v3_subsystems tests/test_v3_subsystems.cpp)
 target_link_libraries(test_v3_subsystems PRIVATE scheduler_core)
 add_test(NAME V3SubsystemTests COMMAND test_v3_subsystems)
 
+add_executable(test_god_level tests/test_god_level.cpp)
+target_link_libraries(test_god_level PRIVATE scheduler_core)
+add_test(NAME GodLevelSubsystemTests COMMAND test_god_level)
+
 # ── Chaos Engine Test Runner ────────────────────────────────
 add_executable(chaos_runner tests/chaos_runner.cpp)
 target_link_libraries(chaos_runner PRIVATE scheduler_core)
