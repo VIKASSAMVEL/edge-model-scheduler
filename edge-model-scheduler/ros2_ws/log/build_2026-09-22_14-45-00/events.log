@@ -1,0 +1,210 @@
+[0.000000] (-) TimerEvent: {}
+[0.000292] (edge_scheduler_ros2) JobQueued: {'identifier': 'edge_scheduler_ros2', 'dependencies': OrderedDict()}
+[0.000502] (edge_scheduler_ros2) JobStarted: {'identifier': 'edge_scheduler_ros2'}
+[0.030771] (edge_scheduler_ros2) JobProgress: {'identifier': 'edge_scheduler_ros2', 'progress': 'cmake'}
+[0.049872] (edge_scheduler_ros2) JobProgress: {'identifier': 'edge_scheduler_ros2', 'progress': 'build'}
+[0.053884] (edge_scheduler_ros2) Command: {'cmd': ['/usr/bin/cmake', '--build', '/workspace/ros2_ws/build/edge_scheduler_ros2', '--', '-j16', '-l16'], 'cwd': '/workspace/ros2_ws/build/edge_scheduler_ros2', 'env': OrderedDict([('HOSTNAME', 'bcaef06722da'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/root'), ('OLDPWD', '/'), ('ROS_PYTHON_VERSION', '3'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('LANG', 'C.UTF-8'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('PWD', '/workspace/ros2_ws/build/edge_scheduler_ros2'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.098672] (-) TimerEvent: {}
+[0.199210] (-) TimerEvent: {}
+[0.300074] (-) TimerEvent: {}
+[0.400781] (-) TimerEvent: {}
+[0.501199] (-) TimerEvent: {}
+[0.601581] (-) TimerEvent: {}
+[0.702257] (-) TimerEvent: {}
+[0.802983] (-) TimerEvent: {}
+[0.905580] (-) TimerEvent: {}
+[0.967633] (edge_scheduler_ros2) StdoutLine: {'line': b'Consolidate compiler generated dependencies of target obstacle_arbiter_node\n'}
+[1.005731] (-) TimerEvent: {}
+[1.086020] (edge_scheduler_ros2) StdoutLine: {'line': b'[ 16%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/src/obstacle_arbiter_node.cpp.o\n'}
+[1.105922] (-) TimerEvent: {}
+[1.206537] (-) TimerEvent: {}
+[1.307035] (-) TimerEvent: {}
+[1.407620] (-) TimerEvent: {}
+[1.508196] (-) TimerEvent: {}
+[1.608777] (-) TimerEvent: {}
+[1.709130] (-) TimerEvent: {}
+[1.809607] (-) TimerEvent: {}
+[1.910051] (-) TimerEvent: {}
+[2.012580] (-) TimerEvent: {}
+[2.113315] (-) TimerEvent: {}
+[2.214992] (-) TimerEvent: {}
+[2.315463] (-) TimerEvent: {}
+[2.415847] (-) TimerEvent: {}
+[2.516355] (-) TimerEvent: {}
+[2.616859] (-) TimerEvent: {}
+[2.717211] (-) TimerEvent: {}
+[2.817673] (-) TimerEvent: {}
+[2.918137] (-) TimerEvent: {}
+[3.018582] (-) TimerEvent: {}
+[3.122048] (-) TimerEvent: {}
+[3.222676] (-) TimerEvent: {}
+[3.323187] (-) TimerEvent: {}
+[3.423851] (-) TimerEvent: {}
+[3.524601] (-) TimerEvent: {}
+[3.625088] (-) TimerEvent: {}
+[3.725753] (-) TimerEvent: {}
+[3.826325] (-) TimerEvent: {}
+[3.926829] (-) TimerEvent: {}
+[4.028829] (-) TimerEvent: {}
+[4.129516] (-) TimerEvent: {}
+[4.230225] (-) TimerEvent: {}
+[4.331023] (-) TimerEvent: {}
+[4.431560] (-) TimerEvent: {}
+[4.532761] (-) TimerEvent: {}
+[4.633419] (-) TimerEvent: {}
+[4.734217] (-) TimerEvent: {}
+[4.834821] (-) TimerEvent: {}
+[4.937324] (-) TimerEvent: {}
+[5.038098] (-) TimerEvent: {}
+[5.138768] (-) TimerEvent: {}
+[5.239318] (-) TimerEvent: {}
+[5.339956] (-) TimerEvent: {}
+[5.441828] (-) TimerEvent: {}
+[5.542343] (-) TimerEvent: {}
+[5.642854] (-) TimerEvent: {}
+[5.744422] (-) TimerEvent: {}
+[5.845219] (-) TimerEvent: {}
+[5.945976] (-) TimerEvent: {}
+[6.046600] (-) TimerEvent: {}
+[6.147507] (-) TimerEvent: {}
+[6.248211] (-) TimerEvent: {}
+[6.348821] (-) TimerEvent: {}
+[6.449634] (-) TimerEvent: {}
+[6.550458] (-) TimerEvent: {}
+[6.651104] (-) TimerEvent: {}
+[6.755480] (-) TimerEvent: {}
+[6.856002] (-) TimerEvent: {}
+[6.956565] (-) TimerEvent: {}
+[7.057082] (-) TimerEvent: {}
+[7.157663] (-) TimerEvent: {}
+[7.258106] (-) TimerEvent: {}
+[7.358573] (-) TimerEvent: {}
+[7.459287] (-) TimerEvent: {}
+[7.560342] (-) TimerEvent: {}
+[7.660792] (-) TimerEvent: {}
+[7.761249] (-) TimerEvent: {}
+[7.861718] (-) TimerEvent: {}
+[7.962249] (-) TimerEvent: {}
+[8.076542] (-) TimerEvent: {}
+[8.177174] (-) TimerEvent: {}
+[8.277826] (-) TimerEvent: {}
+[8.378427] (-) TimerEvent: {}
+[8.479035] (-) TimerEvent: {}
+[8.579535] (-) TimerEvent: {}
+[8.680067] (-) TimerEvent: {}
+[8.780531] (-) TimerEvent: {}
+[8.881021] (-) TimerEvent: {}
+[8.981517] (-) TimerEvent: {}
+[9.082026] (-) TimerEvent: {}
+[9.182665] (-) TimerEvent: {}
+[9.283216] (-) TimerEvent: {}
+[9.384577] (-) TimerEvent: {}
+[9.485164] (-) TimerEvent: {}
+[9.585805] (-) TimerEvent: {}
+[9.686439] (-) TimerEvent: {}
+[9.790767] (-) TimerEvent: {}
+[9.891140] (-) TimerEvent: {}
+[9.992295] (-) TimerEvent: {}
+[10.093406] (-) TimerEvent: {}
+[10.193970] (-) TimerEvent: {}
+[10.300913] (-) TimerEvent: {}
+[10.401221] (-) TimerEvent: {}
+[10.501537] (-) TimerEvent: {}
+[10.601809] (-) TimerEvent: {}
+[10.702109] (-) TimerEvent: {}
+[10.802420] (-) TimerEvent: {}
+[10.902760] (-) TimerEvent: {}
+[11.003128] (-) TimerEvent: {}
+[11.103505] (-) TimerEvent: {}
+[11.203823] (-) TimerEvent: {}
+[11.304185] (-) TimerEvent: {}
+[11.404562] (-) TimerEvent: {}
+[11.504928] (-) TimerEvent: {}
+[11.605259] (-) TimerEvent: {}
+[11.705636] (-) TimerEvent: {}
+[11.805981] (-) TimerEvent: {}
+[11.906313] (-) TimerEvent: {}
+[12.006650] (-) TimerEvent: {}
+[12.107159] (-) TimerEvent: {}
+[12.171318] (edge_scheduler_ros2) StdoutLine: {'line': b'[ 33%] Linking CXX executable obstacle_arbiter_node\n'}
+[12.207307] (-) TimerEvent: {}
+[12.307821] (-) TimerEvent: {}
+[12.408280] (-) TimerEvent: {}
+[12.508696] (-) TimerEvent: {}
+[12.609159] (-) TimerEvent: {}
+[12.709595] (-) TimerEvent: {}
+[12.809963] (-) TimerEvent: {}
+[12.910338] (-) TimerEvent: {}
+[13.010707] (-) TimerEvent: {}
+[13.111034] (-) TimerEvent: {}
+[13.211411] (-) TimerEvent: {}
+[13.311833] (-) TimerEvent: {}
+[13.412221] (-) TimerEvent: {}
+[13.512570] (-) TimerEvent: {}
+[13.613161] (-) TimerEvent: {}
+[13.713867] (-) TimerEvent: {}
+[13.814575] (-) TimerEvent: {}
+[13.915102] (-) TimerEvent: {}
+[14.015564] (-) TimerEvent: {}
+[14.116062] (-) TimerEvent: {}
+[14.216543] (-) TimerEvent: {}
+[14.316939] (-) TimerEvent: {}
+[14.417325] (-) TimerEvent: {}
+[14.517688] (-) TimerEvent: {}
+[14.618209] (-) TimerEvent: {}
+[14.718729] (-) TimerEvent: {}
+[14.819241] (-) TimerEvent: {}
+[14.919614] (-) TimerEvent: {}
+[15.020099] (-) TimerEvent: {}
+[15.120420] (-) TimerEvent: {}
+[15.220757] (-) TimerEvent: {}
+[15.321074] (-) TimerEvent: {}
+[15.421637] (-) TimerEvent: {}
+[15.521970] (-) TimerEvent: {}
+[15.622327] (-) TimerEvent: {}
+[15.723347] (-) TimerEvent: {}
+[15.823769] (-) TimerEvent: {}
+[15.924404] (-) TimerEvent: {}
+[16.024720] (-) TimerEvent: {}
+[16.125061] (-) TimerEvent: {}
+[16.225408] (-) TimerEvent: {}
+[16.325743] (-) TimerEvent: {}
+[16.409451] (edge_scheduler_ros2) StdoutLine: {'line': b'[100%] Built target obstacle_arbiter_node\n'}
+[16.425863] (-) TimerEvent: {}
+[16.453682] (edge_scheduler_ros2) CommandEnded: {'returncode': 0}
+[16.465393] (edge_scheduler_ros2) JobProgress: {'identifier': 'edge_scheduler_ros2', 'progress': 'install'}
+[16.475717] (edge_scheduler_ros2) Command: {'cmd': ['/usr/bin/cmake', '--install', '/workspace/ros2_ws/build/edge_scheduler_ros2'], 'cwd': '/workspace/ros2_ws/build/edge_scheduler_ros2', 'env': OrderedDict([('HOSTNAME', 'bcaef06722da'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/root'), ('OLDPWD', '/'), ('ROS_PYTHON_VERSION', '3'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('LANG', 'C.UTF-8'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('PWD', '/workspace/ros2_ws/build/edge_scheduler_ros2'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[16.484406] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[16.505728] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node\n'}
+[16.525974] (-) TimerEvent: {}
+[16.626244] (-) TimerEvent: {}
+[16.708826] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Set runtime path of "/workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node" to ""\n'}
+[16.726366] (-) TimerEvent: {}
+[16.730137] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/navigation_stress_test.py\n'}
+[16.748544] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch\n'}
+[16.766156] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch/navigation_demo.launch.py\n'}
+[16.795340] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/package_run_dependencies/edge_scheduler_ros2\n'}
+[16.824198] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/parent_prefix_path/edge_scheduler_ros2\n'}
+[16.826462] (-) TimerEvent: {}
+[16.839848] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.sh\n'}
+[16.856888] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.dsv\n'}
+[16.869632] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.sh\n'}
+[16.884288] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.dsv\n'}
+[16.900639] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.bash\n'}
+[16.917384] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.sh\n'}
+[16.926612] (-) TimerEvent: {}
+[16.931620] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.zsh\n'}
+[16.942225] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.dsv\n'}
+[16.951983] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.dsv\n'}
+[16.995272] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/packages/edge_scheduler_ros2\n'}
+[17.008112] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config.cmake\n'}
+[17.016904] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config-version.cmake\n'}
+[17.026749] (-) TimerEvent: {}
+[17.030209] (edge_scheduler_ros2) StdoutLine: {'line': b'-- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.xml\n'}
+[17.039903] (edge_scheduler_ros2) CommandEnded: {'returncode': 0}
+[17.126849] (-) TimerEvent: {}
+[17.227131] (-) TimerEvent: {}
+[17.327388] (-) TimerEvent: {}
+[17.427635] (-) TimerEvent: {}
+[17.467034] (edge_scheduler_ros2) JobEnded: {'identifier': 'edge_scheduler_ros2', 'rc': 0}
+[17.473129] (-) EventReactorShutdown: {}

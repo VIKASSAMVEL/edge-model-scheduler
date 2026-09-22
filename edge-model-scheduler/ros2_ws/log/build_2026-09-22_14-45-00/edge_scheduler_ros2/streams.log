@@ -1,0 +1,29 @@
+[0.073s] Invoking command in '/workspace/ros2_ws/build/edge_scheduler_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/ros2_ws/build/edge_scheduler_ros2 -- -j16 -l16
+[0.968s] Consolidate compiler generated dependencies of target obstacle_arbiter_node
+[1.087s] [ 16%] Building CXX object CMakeFiles/obstacle_arbiter_node.dir/src/obstacle_arbiter_node.cpp.o
+[12.171s] [ 33%] Linking CXX executable obstacle_arbiter_node
+[16.409s] [100%] Built target obstacle_arbiter_node
+[16.453s] Invoked command in '/workspace/ros2_ws/build/edge_scheduler_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/ros2_ws/build/edge_scheduler_ros2 -- -j16 -l16
+[16.476s] Invoking command in '/workspace/ros2_ws/build/edge_scheduler_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /workspace/ros2_ws/build/edge_scheduler_ros2
+[16.484s] -- Install configuration: ""
+[16.506s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node
+[16.709s] -- Set runtime path of "/workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/obstacle_arbiter_node" to ""
+[16.748s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/lib/edge_scheduler_ros2/navigation_stress_test.py
+[16.748s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch
+[16.766s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/launch/navigation_demo.launch.py
+[16.795s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/package_run_dependencies/edge_scheduler_ros2
+[16.824s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/parent_prefix_path/edge_scheduler_ros2
+[16.840s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.sh
+[16.857s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/ament_prefix_path.dsv
+[16.869s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.sh
+[16.884s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/environment/path.dsv
+[16.901s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.bash
+[16.917s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.sh
+[16.932s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.zsh
+[16.942s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/local_setup.dsv
+[16.952s] -- Installing: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.dsv
+[16.995s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/ament_index/resource_index/packages/edge_scheduler_ros2
+[17.008s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config.cmake
+[17.017s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/cmake/edge_scheduler_ros2Config-version.cmake
+[17.030s] -- Up-to-date: /workspace/ros2_ws/install/edge_scheduler_ros2/share/edge_scheduler_ros2/package.xml
+[17.059s] Invoked command in '/workspace/ros2_ws/build/edge_scheduler_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /workspace/ros2_ws/build/edge_scheduler_ros2
