@@ -47,6 +47,7 @@ public:
     }
 
     PrecisionMode get_current_mode() const { return current_mode_; }
+    void force_mode(PrecisionMode mode) { current_mode_ = mode; }
 
 private:
     PrecisionMode current_mode_;

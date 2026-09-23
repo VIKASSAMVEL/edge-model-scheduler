@@ -40,8 +40,24 @@ ament_target_dependencies(obstacle_arbiter_node
 
 target_link_libraries(obstacle_arbiter_node pthread)
 
+add_executable(multi_camera_perception_node
+  src/multi_camera_perception_node.cpp
+  ${SCHEDULER_SOURCES}
+)
+
+ament_target_dependencies(multi_camera_perception_node
+  rclcpp
+  sensor_msgs
+  std_msgs
+  geometry_msgs
+  cv_bridge
+)
+
+target_link_libraries(multi_camera_perception_node pthread)
+
 install(TARGETS
   obstacle_arbiter_node
+  multi_camera_perception_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

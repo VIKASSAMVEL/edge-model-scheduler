@@ -107,6 +107,15 @@ add_test(NAME ModelCompilerUnitTests COMMAND test_model_compiler)
 add_executable(chaos_runner tests/chaos_runner.cpp)
 target_link_libraries(chaos_runner PRIVATE scheduler_core)
 
+# ── Live Hardware Measurements Benchmark ───────────────────
+add_executable(benchmark_live_measurements benchmarks/benchmark_live_measurements.cpp)
+target_link_libraries(benchmark_live_measurements PRIVATE scheduler_core)
+
+# ── Autoware / ROS 2 Perception Stack Test ──────────────────
+add_executable(test_ros2_autoware_pipeline tests/test_ros2_autoware_pipeline.cpp)
+target_link_libraries(test_ros2_autoware_pipeline PRIVATE scheduler_core)
+add_test(NAME AutowarePerceptionPipelineTests COMMAND test_ros2_autoware_pipeline)
+
 # ── Python Bindings (pybind11) ──────────────────────────────
 find_package(pybind11 QUIET)
 if(pybind11_FOUND)

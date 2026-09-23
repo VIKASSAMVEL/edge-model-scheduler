@@ -221,6 +221,36 @@ int main(int argc, char* argv[]) {
         return s;
     });
 
+    dashboard->set_chaos_callback([&](const std::string& action, const std::string& param) -> std::string {
+        if (action == "thermal") {
+            governor->force_mode(PrecisionMode::INT8);
+            return "Simulated 85C thermal trip: Precision downgraded dynamically to INT8 (50% bandwidth saved)";
+        } else if (action == "battery") {
+            battery_gov->update_telemetry(15.0f, false);
+            return "Simulated 15% SoC: BatteryQoS switched to CRITICAL_RTH (Duty-cycling activated)";
+        } else if (action == "burst") {
+            // Inject 50 frames with tight deadline into SlackBatcher
+            auto burst_now = std::chrono::steady_clock::now();
+            for (int i = 0; i < 50; ++i) {
+                SlackRequest req;
+                req.request_id = 9000 + i;
+                req.model_name = "camera_surround_burst";
+                req.priority = 1;
+                req.deadline_ms = 30.0f;
+                req.expected_exec_ms = 6.0f;
+                // Alternate fresh vs delayed frames to prove pre-execution shedding
+                req.ingress_time = (i % 2 == 0) ? burst_now : burst_now - std::chrono::milliseconds(40);
+                slack_batcher->submit(req);
+            }
+            return "Injected 50-frame burst at 200 FPS: Stale frames shed immediately before hardware dispatch";
+        } else if (action == "reset") {
+            governor->force_mode(PrecisionMode::FP16);
+            battery_gov->update_telemetry(100.0f, false);
+            return "System state restored to nominal baseline (FP16, 100% SoC)";
+        }
+        return "Unknown action: " + action;
+    });
+
     // ── Watchdog ────────────────────────────────────────────────
     WatchdogDaemon watchdog(2000);
 

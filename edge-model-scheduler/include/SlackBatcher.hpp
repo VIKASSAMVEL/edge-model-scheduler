@@ -160,6 +160,12 @@ public:
         return true;
     }
 
+    // Drain and form all available batches until queue is empty
+    void flush_all() {
+        BatchJob b;
+        while (try_form_batch(b)) {}
+    }
+
     size_t pending_count() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return pending_queue_.size();
