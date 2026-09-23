@@ -1,0 +1,32 @@
+# ──────────────────────────────────────────────────────────────
+# CODEOWNERS — EdgeModelScheduler
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# ──────────────────────────────────────────────────────────────
+
+# Default owner for everything
+*                                           @VIKASSAMVEL
+
+# ── Core Scheduler Engine ────────────────────────────────────
+edge-model-scheduler/include/               @VIKASSAMVEL
+edge-model-scheduler/src/                   @VIKASSAMVEL
+
+# ── Safety-Critical (requires explicit review) ───────────────
+edge-model-scheduler/include/SafetyIslandGovernor.hpp   @VIKASSAMVEL
+edge-model-scheduler/include/ThorQuantizationEngine.hpp @VIKASSAMVEL
+edge-model-scheduler/include/DeviceGraphArbiter.hpp     @VIKASSAMVEL
+
+# ── CI/CD & Release Infrastructure ──────────────────────────
+.github/                                    @VIKASSAMVEL
+Dockerfile                                  @VIKASSAMVEL
+
+# ── Python Bindings ──────────────────────────────────────────
+edge-model-scheduler/python/                @VIKASSAMVEL
+edge-model-scheduler/pyproject.toml         @VIKASSAMVEL
+edge-model-scheduler/setup.py               @VIKASSAMVEL
+
+# ── Documentation ────────────────────────────────────────────
+*.md                                        @VIKASSAMVEL
+edge-model-scheduler/docs/                  @VIKASSAMVEL
+
+# ── ROS 2 / Autoware Integration ────────────────────────────
+edge-model-scheduler/ros2_ws/               @VIKASSAMVEL

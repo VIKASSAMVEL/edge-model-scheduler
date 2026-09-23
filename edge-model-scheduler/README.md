@@ -18,7 +18,9 @@
   <a href="https://github.com/VIKASSAMVEL/edge-model-scheduler/actions/workflows/ci.yml"><img src="https://github.com/VIKASSAMVEL/edge-model-scheduler/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI/CD Pipeline"/></a>
   <a href="https://github.com/VIKASSAMVEL/edge-model-scheduler/releases/latest"><img src="https://img.shields.io/github/v/release/VIKASSAMVEL/edge-model-scheduler?style=flat-square&color=76B900&label=Release" alt="Latest Release"/></a>
   <a href="https://github.com/VIKASSAMVEL/edge-model-scheduler/pkgs/container/edge-model-scheduler"><img src="https://img.shields.io/badge/GHCR-Container-blue?style=flat-square&logo=docker" alt="Docker Package"/></a>
+  <a href="https://codecov.io/gh/VIKASSAMVEL/edge-model-scheduler"><img src="https://img.shields.io/codecov/c/github/VIKASSAMVEL/edge-model-scheduler?style=flat-square&label=Coverage" alt="Codecov"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square" alt="License"/></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep_a_Changelog-orange?style=flat-square" alt="Changelog"/></a>
 </p>
 
 <p align="center">
