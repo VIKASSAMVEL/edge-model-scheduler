@@ -116,6 +116,11 @@ add_executable(test_ros2_autoware_pipeline tests/test_ros2_autoware_pipeline.cpp
 target_link_libraries(test_ros2_autoware_pipeline PRIVATE scheduler_core)
 add_test(NAME AutowarePerceptionPipelineTests COMMAND test_ros2_autoware_pipeline)
 
+# ── Multimodal VLM Co-Scheduler Test ────────────────────────
+add_executable(test_vlm_coscheduler tests/test_vlm_coscheduler.cpp)
+target_link_libraries(test_vlm_coscheduler PRIVATE scheduler_core)
+add_test(NAME VlmCoSchedulerTests COMMAND test_vlm_coscheduler)
+
 # ── Python Bindings (pybind11) ──────────────────────────────
 find_package(pybind11 QUIET)
 if(pybind11_FOUND)

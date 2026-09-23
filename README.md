@@ -274,9 +274,11 @@ assert not profiler.will_exceed_deadline(slo_target_ms=35.0, queue_delay_ms=2.0)
 ## 📚 Technical Documentation & Artifacts
 
 - [**Empirical Benchmark Whitepaper**](docs/WHITE_PAPER_BENCHMARK_REPORT.md): Complete technical report, methodology, and latency distribution charts comparing EdgeModelScheduler vs. NVIDIA Triton vs. Vanilla ROS 2.
+- [**Academic Preprint Paper**](docs/ACADEMIC_PAPER_PREPRINT.md): Full peer-review-grade publication draft formatted for IEEE Transactions on Robotics / arXiv with formal theorems.
+- [**Hacker News Show HN Launch Post**](docs/HACKER_NEWS_SHOW_HN_LAUNCH.md): Turnkey public release post with 30-second reproducible benchmark commands and architectural breakdowns.
+- [**Staff Systems Engineer Interview Defense Masterclass**](docs/STAFF_ENGINEER_INTERVIEW_DEFENSE_MASTERCLASS.md): L6/L7 defense scripts covering lock-free atomics, Jetson UMA memory models, and real-time scheduling.
+- [**Executive Recruiter Targeting Matrix**](docs/EXECUTIVE_RECRUITER_TARGETING_MATRIX.md): Tailored outreach scripts and value propositions for engineering leadership at Tesla, Waymo, Skydio, Figure AI, and NVIDIA.
 - [**C4 Systems Architecture Specification**](docs/ARCHITECTURE.md): Mathematical derivations for EWMA predictive latency, thermal hysteresis state transitions, and memory bus arbitration.
-- [**Technical Interview Defense Playbook**](docs/INTERVIEW_DEFENSE.md): Engineering defense scripts covering low-level kernel decisions, lock-free concurrency, and hardware trade-offs.
-- [**Recruiter Outreach Strategy**](docs/RECRUITER_OUTREACH_PLAN.md): Target engineering teams across autonomous robotics, edge AI, and autonomous driving.
 
 ---
 
