@@ -6,72 +6,108 @@ on:
   pull_request:
     branches: [ master, main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  cpp-native-build-and-test:
-    name: C++17 Core Build & Unit Tests
+  native-cpp-tests:
+    name: C++17 Core Build & Complete CTest Battery
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Install Build Toolchain & Dependencies
+      - name: Install Toolchain & System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential python3-dev pybind11-dev libpthread-stubs0-dev
+          sudo apt-get install -y cmake build-essential python3-dev pybind11-dev libpthread-stubs0-dev lcov
 
-      - name: Configure CMake & Build Native
+      - name: Configure & Compile C++17 Engine
         run: |
+          cd edge-model-scheduler
           mkdir -p build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 -DNDEBUG --coverage -fprofile-arcs -ftest-coverage"
           make -j$(nproc)
 
-      - name: Execute C++ Unit Tests (CTest)
+      - name: Execute Full 9-Test Battery (CTest)
         run: |
-          cd build
-          ./test_scheduler_core
+          cd edge-model-scheduler/build
           ctest --output-on-failure
 
+      - name: Generate Coverage Report
+        run: |
+          cd edge-model-scheduler/build
+          lcov --capture --directory . --output-file coverage.info || true
+          if [ -f coverage.info ]; then
+            lcov --remove coverage.info '/usr/*' '*/tests/*' '*/pybind11/*' --output-file coverage.info || true
+            lcov --list coverage.info || true
+          fi
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          file: edge-model-scheduler/build/coverage.info
+          flags: cpp
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Package Debian (.deb) Artifact
+        run: |
+          cd edge-model-scheduler/build
+          cpack -G DEB
+
+      - name: Upload Debian Package Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-scheduler-debian-package
+          path: edge-model-scheduler/build/*.deb
+          if-no-files-found: error
+
   python-bindings-verification:
-    name: Python Bindings & Pytest Suite
+    name: Python Native Bindings & Pytest Suite
     runs-on: ubuntu-22.04
-    needs: cpp-native-build-and-test
+    needs: native-cpp-tests
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install Python Test Dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest fastapi uvicorn pydantic
+          pip install pytest pybind11
 
       - name: Build pybind11 Module
         run: |
           sudo apt-get update && sudo apt-get install -y cmake build-essential pybind11-dev
+          cd edge-model-scheduler
           mkdir -p build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release
           make edge_scheduler_py -j$(nproc)
 
       - name: Run Pytest Suite
         run: |
+          cd edge-model-scheduler
           PYTHONPATH=$PWD/build pytest tests/test_python_bindings.py -v
 
-  ros2-humble-container-verification:
-    name: ROS 2 Humble Integration Verification
+  ros2-humble-verification:
+    name: Autoware & ROS 2 Humble Integration
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Run ROS 2 Build in Docker Container
+      - name: Build ROS 2 Perception Stack in Container
         run: |
-          docker run --rm -v "$PWD:/workspace" osrf/ros:humble-desktop-full bash -c "
-            cd /workspace/ros2_ws &&
+          docker run --rm -v "$PWD:/workspace" -w /workspace/edge-model-scheduler/ros2_ws osrf/ros:humble-desktop-full bash -c "
+            source /opt/ros/humble/setup.bash &&
             colcon build --symlink-install &&
             source install/setup.bash &&
-            echo 'ROS 2 package built successfully'
+            echo '✅ ROS 2 Autoware Perception Stack Compiled Successfully'
           "
