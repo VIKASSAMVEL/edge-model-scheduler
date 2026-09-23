@@ -137,13 +137,22 @@ struct EvaluationStats {
     double avg_freshness{0.0f};
 };
 
+struct SchedulerConfig {
+    bool enable_stale_shedding{true};
+    bool enable_slack_admission{true};
+    bool enable_thermal_governor{true};
+    bool enable_dla_coscheduling{true};
+    bool enable_critical_preemption{true};
+};
+
 static EvaluationStats run_impossible_workload_simulation(
     BaselineType baseline,
     int num_tasks,
     bool inject_thermal_throttle,
     std::vector<SimulatedTask>& out_tasks,
     void* shared_arena,
-    size_t arena_size
+    size_t arena_size,
+    SchedulerConfig config = {}
 ) {
     EvaluationStats stats;
     stats.baseline_name = baseline_to_string(baseline);
@@ -157,7 +166,6 @@ static EvaluationStats run_impossible_workload_simulation(
     std::uniform_int_distribution<size_t> model_dist(0, HETEROGENEOUS_MODELS.size() - 1);
     std::uniform_real_distribution<float> jitter_dist(0.0f, 25.0f);
 
-    double sim_time_ms = 0.0;
     // Generate arriving stream: ingress interval = 9ms (Total nominal demand ~ 16ms per 9ms = ~177% saturation!)
     for (int i = 0; i < num_tasks; ++i) {
         SimulatedTask t;
@@ -181,12 +189,11 @@ static EvaluationStats run_impossible_workload_simulation(
     all_latencies.reserve(num_tasks);
     critical_latencies.reserve(num_tasks);
 
-    // Discrete Event Accelerator Queue
+    // Discrete Event Accelerator Queue tracking
     double gpu_available_time_ms = 0.0;
     double dla0_available_time_ms = 0.0;
-    
-    // Priority queue storage for queues
-    std::deque<SimulatedTask*> ready_queue;
+    double stream0_free_time = 0.0;
+    double stream1_free_time = 0.0;
 
     for (size_t i = 0; i < tasks.size(); ++i) {
         auto& t = tasks[i];
@@ -195,7 +202,7 @@ static EvaluationStats run_impossible_workload_simulation(
         burn_compute_work(0.02f, shared_arena, arena_size);
 
         if (baseline == BaselineType::BASELINE_A_SEQUENTIAL) {
-            // Sequential FIFO: Queue grows without bound, no shedding
+            // Sequential FIFO: Queue grows without bound, no shedding, no prioritization
             double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms);
             double q_wait = start_exec - t.ingress_time_ms;
             double exec_time = t.model.nominal_exec_ms * (t.is_throttled ? 1.65 : 1.0);
@@ -223,12 +230,18 @@ static EvaluationStats run_impossible_workload_simulation(
             stats.avg_freshness += t.freshness_score;
         }
         else if (baseline == BaselineType::BASELINE_B_CONCURRENT_UNMANAGED) {
-            // Concurrent Unmanaged: 2 streams overlap, but incur memory bus contention (1.4x slowdown)
-            double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms * 0.95);
-            double q_wait = std::max(0.0, start_exec - t.ingress_time_ms);
-            double exec_time = (t.model.nominal_exec_ms * 1.40) * (t.is_throttled ? 1.65 : 1.0);
+            // Concurrent Unmanaged: Dual CUDA streams running on GPU concurrently
+            // Kernels experience ~1.35x execution dilation due to SM and memory bus contention
+            double earliest_stream = std::min(stream0_free_time, stream1_free_time);
+            double start_exec = std::max(t.ingress_time_ms, earliest_stream);
+            double q_wait = start_exec - t.ingress_time_ms;
+            double exec_time = (t.model.nominal_exec_ms * 1.35) * (t.is_throttled ? 1.65 : 1.0);
             
-            gpu_available_time_ms = start_exec + (exec_time * 0.70); // Partial overlap
+            if (stream0_free_time <= stream1_free_time) {
+                stream0_free_time = start_exec + exec_time;
+            } else {
+                stream1_free_time = start_exec + exec_time;
+            }
             double total_lat = q_wait + exec_time;
             
             t.queue_wait_ms = q_wait;
@@ -251,9 +264,9 @@ static EvaluationStats run_impossible_workload_simulation(
             stats.avg_freshness += t.freshness_score;
         }
         else if (baseline == BaselineType::BASELINE_C_ROUND_ROBIN) {
-            // Round-robin model cycling
+            // Round-robin model cycling with 6.0ms context switch penalty
             double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms);
-            double q_wait = (start_exec - t.ingress_time_ms) + 6.0; // Switching delay
+            double q_wait = (start_exec - t.ingress_time_ms) + 6.0;
             double exec_time = t.model.nominal_exec_ms * (t.is_throttled ? 1.65 : 1.0);
             
             gpu_available_time_ms = start_exec + exec_time;
@@ -279,14 +292,19 @@ static EvaluationStats run_impossible_workload_simulation(
             stats.avg_freshness += t.freshness_score;
         }
         else if (baseline == BaselineType::BASELINE_D_STATIC_PRIORITY) {
-            // Static Priority: Critical tasks jump ahead, but low-priority tasks in progress cannot be preempted (HOL blocking)
+            // Non-Preemptive Static Priority:
+            // Critical tasks jump ahead in queue, but suffer head-of-line blocking from running kernels (up to 40ms)
             double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms);
             double q_wait = start_exec - t.ingress_time_ms;
-            // High priority reduces queue wait by 60%, but still suffers if low prio is running
-            if (t.model.criticality >= 0.8f) q_wait *= 0.35;
+            
+            if (t.model.criticality >= 0.8f && q_wait > 0) {
+                // Residual execution time of blocking non-critical kernel
+                q_wait = std::min(q_wait, (double)(14.0 * (t.is_throttled ? 1.65 : 1.0)));
+                start_exec = t.ingress_time_ms + q_wait;
+            }
             
             double exec_time = t.model.nominal_exec_ms * (t.is_throttled ? 1.65 : 1.0);
-            gpu_available_time_ms = start_exec + exec_time;
+            gpu_available_time_ms = std::max(gpu_available_time_ms, start_exec + exec_time);
             double total_lat = q_wait + exec_time;
             
             t.queue_wait_ms = q_wait;
@@ -309,15 +327,20 @@ static EvaluationStats run_impossible_workload_simulation(
             stats.avg_freshness += t.freshness_score;
         }
         else if (baseline == BaselineType::BASELINE_E_EARLIEST_DEADLINE_FIRST) {
-            // EDF: Sorts by absolute deadline; causes domino collapses under overload
+            // EDF: Under overload, domino collapses occur.
+            // Earlier deadlines receive higher relative dispatch priority, but queue explosion causes cascaded misses
             double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms);
             double q_wait = start_exec - t.ingress_time_ms;
+            
+            double deadline_factor = std::min(1.0, (double)t.model.deadline_ms / 100.0);
+            double edf_wait = q_wait * (0.65 + 0.35 * deadline_factor);
+            start_exec = t.ingress_time_ms + edf_wait;
+            
             double exec_time = t.model.nominal_exec_ms * (t.is_throttled ? 1.65 : 1.0);
+            gpu_available_time_ms = std::max(gpu_available_time_ms, start_exec + exec_time);
+            double total_lat = edf_wait + exec_time;
             
-            gpu_available_time_ms = start_exec + exec_time;
-            double total_lat = q_wait + exec_time;
-            
-            t.queue_wait_ms = q_wait;
+            t.queue_wait_ms = edf_wait;
             t.exec_time_ms = exec_time;
             t.total_latency_ms = total_lat;
             t.missed_deadline = (total_lat > t.model.deadline_ms);
@@ -337,10 +360,11 @@ static EvaluationStats run_impossible_workload_simulation(
             stats.avg_freshness += t.freshness_score;
         }
         else if (baseline == BaselineType::BASELINE_F_SERVER_DYNAMIC_BATCHER) {
-            // Dynamic Batcher (Triton Model): Batches instances, 12ms collection window
-            double start_exec = std::max(t.ingress_time_ms, gpu_available_time_ms);
-            double batching_window = 12.0; // Batch delay
-            double q_wait = (start_exec - t.ingress_time_ms) + batching_window;
+            // Dynamic Batcher (Triton Model): Batches instances with 10ms accumulation window
+            // Throughput increases by 30% (nominal_exec * 0.70), but suffers 10ms batch wait
+            double batching_window = 10.0;
+            double start_exec = std::max(t.ingress_time_ms + batching_window, gpu_available_time_ms);
+            double q_wait = start_exec - t.ingress_time_ms;
             double exec_time = (t.model.nominal_exec_ms * 0.70) * (t.is_throttled ? 1.65 : 1.0);
             
             gpu_available_time_ms = start_exec + exec_time;
@@ -368,43 +392,44 @@ static EvaluationStats run_impossible_workload_simulation(
         else if (baseline == BaselineType::BASELINE_G_EDGEMODELSCHEDULER) {
             // EdgeModelScheduler (Ours):
             // 1. Pre-execution Staleness Check: If ingress delay exceeds freshness window, shed immediately!
-            if (t.ingress_delay_ms > t.model.max_freshness_window_ms) {
+            if (config.enable_stale_shedding && (t.ingress_delay_ms > t.model.max_freshness_window_ms)) {
                 t.was_shed = true;
                 stats.shed_tasks++;
                 continue;
             }
 
             // 2. Pre-execution Feasibility / Slack Check:
-            // Calculate estimated queue wait on GPU
             double est_start = std::max(t.ingress_time_ms, gpu_available_time_ms);
             double est_wait = est_start - t.ingress_time_ms;
             
             // Thermal governor: INT8 fallback reduces execution duration by 48%
             double exec_time = t.model.nominal_exec_ms;
             if (t.is_throttled) {
-                t.precision = PrecisionMode::INT8;
-                exec_time *= 0.52;
+                if (config.enable_thermal_governor) {
+                    t.precision = PrecisionMode::INT8;
+                    exec_time *= 0.52;
+                } else {
+                    exec_time *= 1.65;
+                }
             }
 
             // If non-critical task ($c_i < 0.8$) will miss deadline, SHED IT BEFORE IT TOUCHES ACCELERATOR!
-            if (t.model.criticality < 0.8f && (est_wait + exec_time > t.model.deadline_ms)) {
+            if (config.enable_slack_admission && t.model.criticality < 0.8f && (est_wait + exec_time > t.model.deadline_ms)) {
                 t.was_shed = true;
                 stats.shed_tasks++;
                 continue; // Do NOT advance gpu_available_time_ms! Preserves queue for critical tasks!
             }
 
             // 3. Heterogeneous DLA Co-scheduling offload:
-            // If model is DLA-eligible and GPU is occupied, offload to DLA!
             bool executed_on_dla = false;
             double start_exec = 0.0;
-            if (t.model.dla_eligible && dla0_available_time_ms <= est_start) {
+            if (config.enable_dla_coscheduling && t.model.dla_eligible && dla0_available_time_ms <= est_start) {
                 start_exec = std::max(t.ingress_time_ms, dla0_available_time_ms);
                 dla0_available_time_ms = start_exec + (exec_time * 1.05); // DLA execution
                 executed_on_dla = true;
             } else {
-                // Safety emergency brake preempts queue
-                if (t.model.criticality >= 1.0f) {
-                    // Preemption: runs as soon as current running task finishes (capped at 4ms wait)
+                // Safety emergency brake preempts queue at sub-iteration boundary
+                if (config.enable_critical_preemption && t.model.criticality >= 1.0f) {
                     start_exec = std::max(t.ingress_time_ms, std::min(gpu_available_time_ms, t.ingress_time_ms + 3.5));
                 } else {
                     start_exec = est_start;
@@ -454,8 +479,13 @@ static EvaluationStats run_impossible_workload_simulation(
         stats.critical_p99_latency_ms = critical_latencies[static_cast<size_t>(n * 0.99)];
     }
 
+    size_t total_critical_tasks = 0;
+    for (const auto& t : tasks) {
+        if (t.model.criticality >= 0.8f) total_critical_tasks++;
+    }
+
     stats.miss_rate_pct = stats.completed_tasks > 0 ? (stats.deadline_misses * 100.0f / stats.completed_tasks) : 0.0f;
-    stats.critical_miss_rate_pct = (num_tasks / 4 > 0) ? (stats.critical_misses * 100.0f / (num_tasks / 4)) : 0.0f;
+    stats.critical_miss_rate_pct = (total_critical_tasks > 0) ? (stats.critical_misses * 100.0f / total_critical_tasks) : 0.0f;
     if (stats.completed_tasks > 0) stats.avg_freshness /= stats.completed_tasks;
 
     out_tasks.insert(out_tasks.end(), tasks.begin(), tasks.end());
@@ -466,12 +496,9 @@ static EvaluationStats run_impossible_workload_simulation(
 // Experiment 17: Subsystem Ablation Study
 // ─────────────────────────────────────────────────────────────────────────────
 
-struct AblationVariant {
+struct AblationVariantDef {
     std::string name;
-    bool enable_shedding;
-    bool enable_thermal_int8;
-    bool enable_dla;
-    bool enable_slack;
+    SchedulerConfig config;
 };
 
 static void run_ablation_study(
@@ -480,12 +507,13 @@ static void run_ablation_study(
     void* shared_arena,
     size_t arena_size
 ) {
-    std::vector<AblationVariant> variants = {
-        {"Full-EdgeModelScheduler", true, true, true, true},
-        {"No-Stale-Shedding",       false, true, true, true},
-        {"No-Thermal-Governor",     true, false, true, true},
-        {"No-DLA-CoScheduler",      true, true, false, true},
-        {"No-Slack-Admission",      false, false, false, false} // Degrades to standard priority
+    std::vector<AblationVariantDef> variants = {
+        {"Full-EdgeModelScheduler", {true, true, true, true, true}},
+        {"No-Stale-Shedding",       {false, true, true, true, true}},
+        {"No-Thermal-Governor",     {true, true, false, true, true}},
+        {"No-DLA-CoScheduler",      {true, true, true, false, true}},
+        {"No-Slack-Admission",      {true, false, true, true, true}},
+        {"Degraded-Priority-Only",  {false, false, false, false, false}}
     };
 
     std::ofstream f(ablation_csv_path);
@@ -496,32 +524,9 @@ static void run_ablation_study(
     std::cout << "\n[Ablation Study] Evaluating Subsystem Contributions (1,000 tasks each)..." << std::endl;
     for (const auto& v : variants) {
         std::vector<SimulatedTask> v_tasks;
-        // Run customized simulation based on enabled flags
-        EvaluationStats s;
-        if (v.enable_shedding && v.enable_thermal_int8 && v.enable_dla) {
-            s = run_impossible_workload_simulation(BaselineType::BASELINE_G_EDGEMODELSCHEDULER, 1000, true, v_tasks, shared_arena, arena_size);
-        } else if (!v.enable_shedding && !v.enable_thermal_int8 && !v.enable_dla) {
-            s = run_impossible_workload_simulation(BaselineType::BASELINE_D_STATIC_PRIORITY, 1000, true, v_tasks, shared_arena, arena_size);
-        } else {
-            // Intermediate ablation
-            s = run_impossible_workload_simulation(BaselineType::BASELINE_G_EDGEMODELSCHEDULER, 1000, true, v_tasks, shared_arena, arena_size);
-            if (!v.enable_thermal_int8) {
-                s.p99_latency_ms *= 1.45;
-                s.critical_p99_latency_ms *= 1.35;
-                s.miss_rate_pct += 12.0;
-            }
-            if (!v.enable_dla) {
-                s.p99_latency_ms *= 1.25;
-                s.throughput_fps *= 0.72;
-                s.miss_rate_pct += 8.5;
-            }
-            if (!v.enable_shedding) {
-                s.miss_rate_pct += 24.0;
-                s.critical_miss_rate_pct += 18.0;
-            }
-        }
+        auto s = run_impossible_workload_simulation(BaselineType::BASELINE_G_EDGEMODELSCHEDULER, 1000, true, v_tasks, shared_arena, arena_size, v.config);
 
-        std::cout << "  ✓ " << std::left << std::setw(26) << v.name 
+        std::cout << "  [OK] " << std::left << std::setw(26) << v.name 
                   << " | P99: " << std::fixed << std::setprecision(1) << s.p99_latency_ms 
                   << "ms | Miss Rate: " << s.miss_rate_pct << "% | Critical Misses: " << s.critical_miss_rate_pct << "%" << std::endl;
 

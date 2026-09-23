@@ -1,6 +1,7 @@
 Variant,P50_ms,P95_ms,P99_ms,Critical_P99_ms,DeadlineMissRatePct,CriticalMissRatePct,MissionUtility
 Full-EdgeModelScheduler,10,59,78,10,0,0,406.234
-No-Stale-Shedding,10,59,78,10,24,18,406.234
-No-Thermal-Governor,10,59,113.1,13.5,12,0,406.234
-No-DLA-CoScheduler,10,59,97.5,10,8.5,0,406.234
-No-Slack-Admission,2851.82,9798.4,10537.4,3699.79,97.4,208.8,-1597.14
+No-Stale-Shedding,10,55.7537,78,10.6158,0,0,406.24
+No-Thermal-Governor,10.1,78,121.7,26.22,0.106496,0.18622,342.746
+No-DLA-CoScheduler,14.56,60,81.0744,53.5039,3.51603,6.33147,290.005
+No-Slack-Admission,10,59,81.2925,10,0.306435,0,407.109
+Degraded-Priority-Only,5642.5,10304.2,10602,10563.4,97.8,97.9516,-1608.89

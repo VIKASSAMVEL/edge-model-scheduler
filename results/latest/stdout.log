@@ -4,30 +4,31 @@
 ===============================================================
 
 [Phase 16] Measuring Micro-Architectural Scheduler Overhead...
-  [OK] Lock-Free Pinned Memory Pool  : 7.25 ns / op
+  [OK] Lock-Free Pinned Memory Pool  : 7.39 ns / op
   [OK] Task Priority Queue Dispatch  : 0.38 ns / op
-  [OK] Lock-Free Shared Memory Ring  : 8.29 ns / op
-  [OK] Total Scheduler Decision Path : 15.91 ns (0.0001% of 10ms frame)
+  [OK] Lock-Free Shared Memory Ring  : 7.16 ns / op
+  [OK] Total Scheduler Decision Path : 14.93 ns (0.0001% of 10ms frame)
 
 [Phase 8-10] Executing Centerpiece Impossible Workload Benchmark (7 Baselines)...
-  --> Evaluating: Baseline-A-Sequential-FIFO          ... P99: 10602.0 ms | Crit P99: 10563.4 ms | Miss Rate: 97.8% | Crit Misses: 210.4% | Utility: -1608  
-  --> Evaluating: Baseline-B-Concurrent-Unmanaged     ... P99: 92.4   ms | Crit P99: 23.1  ms | Miss Rate: 0.2 % | Crit Misses: 0.8 % | Utility: 330    
-  --> Evaluating: Baseline-C-Round-Robin              ... P99: 10608.0 ms | Crit P99: 10569.4 ms | Miss Rate: 98.2% | Crit Misses: 212.0% | Utility: -1619  
-  --> Evaluating: Baseline-D-Static-Priority          ... P99: 10537.4 ms | Crit P99: 3699.8 ms | Miss Rate: 97.4% | Crit Misses: 208.8% | Utility: -1597  
-  --> Evaluating: Baseline-E-Earliest-Deadline-First  ... P99: 10602.0 ms | Crit P99: 10563.4 ms | Miss Rate: 97.8% | Crit Misses: 210.4% | Utility: -1608  
-  --> Evaluating: Baseline-F-Server-Dynamic-Batcher   ... P99: 4807.7 ms | Crit P99: 4797.7 ms | Miss Rate: 97.0% | Crit Misses: 211.2% | Utility: -1607  
+  --> Evaluating: Baseline-A-Sequential-FIFO          ... P99: 10602.0 ms | Crit P99: 10563.4 ms | Miss Rate: 97.8% | Crit Misses: 98.0% | Utility: -1608  
+  --> Evaluating: Baseline-B-Concurrent-Unmanaged     ... P99: 4316.2 ms | Crit P99: 4291.0 ms | Miss Rate: 95.6% | Crit Misses: 96.5% | Utility: -1574  
+  --> Evaluating: Baseline-C-Round-Robin              ... P99: 10608.0 ms | Crit P99: 10569.4 ms | Miss Rate: 98.2% | Crit Misses: 98.7% | Utility: -1619  
+  --> Evaluating: Baseline-D-Static-Priority          ... P99: 7021.6 ms | Crit P99: 39.6  ms | Miss Rate: 86.4% | Crit Misses: 77.3% | Utility: -1352  
+  --> Evaluating: Baseline-E-Earliest-Deadline-First  ... P99: 4328.8 ms | Crit P99: 3279.3 ms | Miss Rate: 97.0% | Crit Misses: 97.6% | Utility: -1597  
+  --> Evaluating: Baseline-F-Server-Dynamic-Batcher   ... P99: 4805.7 ms | Crit P99: 4795.7 ms | Miss Rate: 96.8% | Crit Misses: 98.1% | Utility: -1603  
   --> Evaluating: Baseline-G-EdgeModelScheduler-Ours  ... P99: 78.0   ms | Crit P99: 10.0  ms | Miss Rate: 0.0 % | Crit Misses: 0.0 % | Utility: 406    
 
 [Ablation Study] Evaluating Subsystem Contributions (1,000 tasks each)...
-  ✓ Full-EdgeModelScheduler    | P99: 78.0ms | Miss Rate: 0.0% | Critical Misses: 0.0%
-  ✓ No-Stale-Shedding          | P99: 78.0ms | Miss Rate: 24.0% | Critical Misses: 18.0%
-  ✓ No-Thermal-Governor        | P99: 113.1ms | Miss Rate: 12.0% | Critical Misses: 0.0%
-  ✓ No-DLA-CoScheduler         | P99: 97.5ms | Miss Rate: 8.5% | Critical Misses: 0.0%
-  ✓ No-Slack-Admission         | P99: 10537.4ms | Miss Rate: 97.4% | Critical Misses: 208.8%
+  [OK] Full-EdgeModelScheduler    | P99: 78.0ms | Miss Rate: 0.0% | Critical Misses: 0.0%
+  [OK] No-Stale-Shedding          | P99: 78.0ms | Miss Rate: 0.0% | Critical Misses: 0.0%
+  [OK] No-Thermal-Governor        | P99: 121.7ms | Miss Rate: 0.1% | Critical Misses: 0.2%
+  [OK] No-DLA-CoScheduler         | P99: 81.1ms | Miss Rate: 3.5% | Critical Misses: 6.3%
+  [OK] No-Slack-Admission         | P99: 81.3ms | Miss Rate: 0.3% | Critical Misses: 0.0%
+  [OK] Degraded-Priority-Only     | P99: 10602.0ms | Miss Rate: 97.8% | Critical Misses: 98.0%
 
 [Phase 5] Writing Raw Data and Summary Schemas...
-  [OK] Exported: D:\next-big-thing\results\20260923_093101Z_e05da9a\summary.csv
-  [OK] Exported: D:\next-big-thing\results\20260923_093101Z_e05da9a\raw.csv (7000 records)
+  [OK] Exported: D:\next-big-thing\results\20260923_150449Z_b058188\summary.csv
+  [OK] Exported: D:\next-big-thing\results\20260923_150449Z_b058188\raw.csv (7000 records)
 
 ===============================================================
 [SUCCESS] EMPIRICAL PROOF BATTERY COMPLETE
