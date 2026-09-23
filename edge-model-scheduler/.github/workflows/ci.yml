@@ -47,7 +47,7 @@ jobs:
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v7
         with:
-          file: edge-model-scheduler/build/coverage.info
+          files: edge-model-scheduler/build/coverage.info
           flags: cpp
           fail_ci_if_error: false
         env:
