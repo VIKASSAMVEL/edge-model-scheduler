@@ -13,10 +13,10 @@ except ImportError:
     USE_PYBIND11_HELPERS = False
 
 __version__ = "3.3.0"
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 include_dirs = [
-    "include",
-    os.path.join(os.path.dirname(__file__), "include"),
+    os.path.join(basedir, "include"),
     "/usr/include/pybind11",
     sysconfig.get_path("include"),
 ]
@@ -37,11 +37,11 @@ ext_modules = [
     Pybind11Extension(
         "edge_scheduler_py",
         [
-            "python/bindings.cpp",
-            "src/ResourceMonitor.cpp",
-            "src/Scheduler.cpp",
-            "src/AdvancedScheduler.cpp",
-            "src/TensorRTRunner.cpp",
+            os.path.join(basedir, "python/bindings.cpp"),
+            os.path.join(basedir, "src/ResourceMonitor.cpp"),
+            os.path.join(basedir, "src/Scheduler.cpp"),
+            os.path.join(basedir, "src/AdvancedScheduler.cpp"),
+            os.path.join(basedir, "src/TensorRTRunner.cpp"),
         ],
         include_dirs=include_dirs,
         extra_compile_args=extra_compile_args,

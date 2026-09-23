@@ -1,0 +1,4 @@
+include README.md
+recursive-include include *.hpp
+recursive-include src *.cpp
+recursive-include python *.cpp *.py
