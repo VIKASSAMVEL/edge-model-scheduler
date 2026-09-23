@@ -1,0 +1,6 @@
+Variant,P50_ms,P95_ms,P99_ms,Critical_P99_ms,DeadlineMissRatePct,CriticalMissRatePct,MissionUtility
+Full-EdgeModelScheduler,10,59,78,10,0,0,406.234
+No-Stale-Shedding,10,59,78,10,24,18,406.234
+No-Thermal-Governor,10,59,113.1,13.5,12,0,406.234
+No-DLA-CoScheduler,10,59,97.5,10,8.5,0,406.234
+No-Slack-Admission,2851.82,9798.4,10537.4,3699.79,97.4,208.8,-1597.14

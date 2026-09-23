@@ -1,0 +1,15 @@
+{
+  "benchmark": "impossible_workload_benchmark",
+  "task_count_per_baseline": 1000,
+  "baselines_evaluated": [
+    "Baseline-A-Sequential-FIFO",
+    "Baseline-B-Concurrent-Unmanaged",
+    "Baseline-C-Round-Robin",
+    "Baseline-D-Static-Priority",
+    "Baseline-E-Earliest-Deadline-First",
+    "Baseline-F-Server-Dynamic-Batcher",
+    "Baseline-G-EdgeModelScheduler-Ours"
+  ],
+  "workload_profile": "5 Heterogeneous Edge Robotics Models (EmergencyBrake, YOLOv8, Depth, LaneSeg, SLAM)",
+  "infeasible_load_factor": "140% - 177% Over-subscribed"
+}

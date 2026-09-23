@@ -111,6 +111,11 @@ target_link_libraries(chaos_runner PRIVATE scheduler_core)
 add_executable(benchmark_live_measurements benchmarks/benchmark_live_measurements.cpp)
 target_link_libraries(benchmark_live_measurements PRIVATE scheduler_core)
 
+# ── Scientific Impossible Workload Benchmark (7 Baselines) ──
+add_executable(impossible_workload_benchmark benchmarks/impossible_workload_benchmark.cpp)
+target_link_libraries(impossible_workload_benchmark PRIVATE scheduler_core)
+add_test(NAME ImpossibleWorkloadBenchmark COMMAND impossible_workload_benchmark)
+
 # ── Autoware / ROS 2 Perception Stack Test ──────────────────
 add_executable(test_ros2_autoware_pipeline tests/test_ros2_autoware_pipeline.cpp)
 target_link_libraries(test_ros2_autoware_pipeline PRIVATE scheduler_core)
