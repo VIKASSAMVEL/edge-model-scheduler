@@ -158,9 +158,6 @@ private:
     std::atomic<double> last_processing_latency_ms_{0.0};
 };
 
-#include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(AutowarePointCloudZeroCopyNode)
-
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<AutowarePointCloudZeroCopyNode>();
