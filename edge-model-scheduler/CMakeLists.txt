@@ -121,6 +121,21 @@ add_executable(test_vlm_coscheduler tests/test_vlm_coscheduler.cpp)
 target_link_libraries(test_vlm_coscheduler PRIVATE scheduler_core)
 add_test(NAME VlmCoSchedulerTests COMMAND test_vlm_coscheduler)
 
+# ── NVIDIA Thor 4-Tier Quantization Test ────────────────────
+add_executable(test_thor_quantization tests/test_thor_quantization.cpp)
+target_link_libraries(test_thor_quantization PRIVATE scheduler_core)
+add_test(NAME ThorQuantizationTests COMMAND test_thor_quantization)
+
+# ── ISO 26262 ASIL-D Functional Safety Test ─────────────────
+add_executable(test_safety_island tests/test_safety_island.cpp)
+target_link_libraries(test_safety_island PRIVATE scheduler_core)
+add_test(NAME SafetyIslandTests COMMAND test_safety_island)
+
+# ── Device-Side Conditional CUDA Graph Test ─────────────────
+add_executable(test_device_graph_arbiter tests/test_device_graph_arbiter.cpp)
+target_link_libraries(test_device_graph_arbiter PRIVATE scheduler_core)
+add_test(NAME DeviceGraphArbiterTests COMMAND test_device_graph_arbiter)
+
 # ── Python Bindings (pybind11) ──────────────────────────────
 find_package(pybind11 QUIET)
 if(pybind11_FOUND)
