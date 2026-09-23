@@ -194,6 +194,27 @@ results/<timestamp>_<git-sha>/
 
 ---
 
+## 🎛️ Real-Time Mission Control Bento Dashboard
+
+EdgeModelScheduler features a production-grade, zero-bloat **Bento Grid** mission control interface designed for autonomous vehicle operations:
+
+* **Hardware Topology & Arbiter Map (2x2)**: Real-time visual tracking of GPU SM Core occupancy, DLA-0/DLA-1 offload streams, dynamic FP16 $\leftrightarrow$ INT8 precision states, and zero-copy shared memory slots (`/dev/shm`).
+* **Real-Time Latency Oscilloscope (2x1)**: 60-frame rolling SVG vector sparkline calibrated with a strict 15.0ms Safety SLO threshold.
+* **Interactive Chaos Console (2x1)**: Interactive triggers to inject thermal spikes (82°C clock throttle), SEU radiation bit-flips, low battery droop, and sensor jitter bursts to observe real-time fail-safe recovery.
+* **Dual Delivery**:
+  * **Native Embedded C++ Daemon**: Built directly into [`EmbeddedDashboard.hpp`](edge-model-scheduler/include/EmbeddedDashboard.hpp), served on `http://localhost:9090`.
+  * **Standalone Zero-Dependency Web UI**: Viewable instantly in any modern browser at [`edge-model-scheduler/dashboard/index.html`](edge-model-scheduler/dashboard/index.html) with integrated high-fidelity telemetry simulator.
+
+```bash
+# Launch the C++ embedded daemon on :9090
+./build/edge_model_scheduler_daemon --port 9090
+
+# Or preview the standalone Bento dashboard directly in your browser:
+# Open edge-model-scheduler/dashboard/index.html
+```
+
+---
+
 ## 📚 Technical Research Documentation
 
 * [`docs/CLAIM_TRACEABILITY.md`](docs/CLAIM_TRACEABILITY.md): Complete chain-of-custody tracing every headline number to code.
