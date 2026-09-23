@@ -1,0 +1,52 @@
+name: 🐛 Bug Report
+description: Report unexpected behavior, latency spikes, or memory faults
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve EdgeModelScheduler! Please fill out the hardware and runtime details below.
+  - type: dropdown
+    id: hardware
+    attributes:
+      label: Target Hardware Architecture
+      options:
+        - "NVIDIA Jetson AGX Orin (64GB / 32GB)"
+        - "NVIDIA Jetson Orin NX (16GB / 8GB)"
+        - "NVIDIA Jetson Orin Nano (8GB / 4GB)"
+        - "NVIDIA DRIVE Thor / Blackwell DevKit"
+        - "x86_64 Host (Simulation / Emulation)"
+        - "Other"
+    validations:
+      required: true
+  - type: input
+    id: jetpack
+    attributes:
+      label: JetPack / OS Version
+      placeholder: "e.g., JetPack 6.0 (L4T 36.3.0) / Ubuntu 22.04 LTS"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      placeholder: Clear, concise description of what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Run `edge-scheduler-daemon --config ...`
+        2. Ingress frame at 120 FPS via /dev/shm
+        3. Observe latency spike
+    validations:
+      required: true
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Kernel & Telemetry Logs
+      placeholder: Output from `benchmark_live_measurements` or `/var/log/edge-scheduler/metrics.jsonl`
+      render: shell

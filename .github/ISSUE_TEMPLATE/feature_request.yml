@@ -1,0 +1,38 @@
+name: 🚀 Feature Request
+description: Propose a new accelerator target, quantization precision, or robotics pipeline
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make EdgeModelScheduler even more deterministic or efficient? Tell us about it!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      placeholder: Is your feature request related to a specific hardware bottleneck or unsupported sensor modality?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution & Architectural Design
+      placeholder: Detailed description of the micro-architectural scheduling change or accelerator integration.
+    validations:
+      required: true
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Target Subsystem
+      options:
+        - "Zero-Copy IPC / ShmRingBuffer"
+        - "SlackBatcher & Pre-Execution Shedding"
+        - "DlaCoScheduler & Accelerator Arbitration"
+        - "VlmCoScheduler & Multimodal Preemption"
+        - "ThorQuantizationEngine & FP4/FP8 Precision"
+        - "SafetyIslandGovernor & ASIL-D Safety"
+        - "EmbeddedDashboard & Web Telemetry"
+        - "ROS 2 & Autoware Bridge"
+    validations:
+      required: true

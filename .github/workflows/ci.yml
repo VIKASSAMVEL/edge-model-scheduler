@@ -1,0 +1,95 @@
+name: EdgeModelScheduler CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-cpp-tests:
+    name: C++17 Core Build & Complete CTest Battery
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Toolchain & System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential python3-dev pybind11-dev libpthread-stubs0-dev
+
+      - name: Configure & Compile C++17 Engine
+        run: |
+          cd edge-model-scheduler
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 -DNDEBUG"
+          make -j$(nproc)
+
+      - name: Execute Full 9-Test Battery (CTest)
+        run: |
+          cd edge-model-scheduler/build
+          ctest --output-on-failure
+
+      - name: Package Debian (.deb) Artifact
+        run: |
+          cd edge-model-scheduler/build
+          cpack -G DEB
+
+      - name: Upload Debian Package Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edge-scheduler-debian-package
+          path: edge-model-scheduler/build/*.deb
+          if-no-files-found: error
+
+  python-bindings-verification:
+    name: Python Native Bindings & Pytest Suite
+    runs-on: ubuntu-22.04
+    needs: native-cpp-tests
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pybind11
+
+      - name: Build pybind11 Module
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake build-essential pybind11-dev
+          cd edge-model-scheduler
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make edge_scheduler_py -j$(nproc)
+
+      - name: Run Pytest Suite
+        run: |
+          cd edge-model-scheduler
+          PYTHONPATH=$PWD/build pytest tests/test_python_bindings.py -v
+
+  ros2-humble-verification:
+    name: Autoware & ROS 2 Humble Integration
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build ROS 2 Perception Stack in Container
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace/edge-model-scheduler/ros2_ws osrf/ros:humble-desktop-full bash -c "
+            source /opt/ros/humble/setup.bash &&
+            colcon build --symlink-install &&
+            source install/setup.bash &&
+            echo '✅ ROS 2 Autoware Perception Stack Compiled Successfully'
+          "

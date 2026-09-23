@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/VIKASSAMVEL/edge-model-scheduler/discussions
+    about: Ask questions, share ideas, benchmark results, and discuss architecture with the edge computing community.
+  - name: Security Vulnerability Disclosure
+    url: https://github.com/VIKASSAMVEL/edge-model-scheduler/security/advisories/new
+    about: Privately report critical ASIL-D or memory-safety vulnerabilities.

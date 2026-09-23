@@ -1,0 +1,50 @@
+name: EdgeModelScheduler Production Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build Production Release Artifacts
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Toolchain & Packaging Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential python3-dev pybind11-dev
+
+      - name: Build C++17 Core & Debian Package
+        run: |
+          cd edge-model-scheduler
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 -DNDEBUG"
+          make -j$(nproc)
+          ctest --output-on-failure
+          cpack -G DEB
+
+      - name: Package Release Assets
+        run: |
+          mkdir -p dist
+          cp edge-model-scheduler/build/*.deb dist/
+          cp edge-model-scheduler/packaging/edge-scheduler.service dist/
+          cd dist
+          sha256sum * > SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.deb
+            dist/edge-scheduler.service
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: false

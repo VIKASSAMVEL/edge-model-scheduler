@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "pybind11>=2.10.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edge-model-scheduler"
+version = "3.3.0"
+description = "Ultra-low-latency deterministic co-scheduling runtime for edge AI and autonomous robotics"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Vikas Samvel", email = "engineering@vikassamvel.dev" }
+]
+keywords = [
+    "edge-ai",
+    "autonomous-driving",
+    "tensorrt",
+    "cuda",
+    "real-time",
+    "scheduler",
+    "iso26262",
+    "asil-d",
+    "robotics"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Hardware"
+]
+dependencies = [
+    "numpy>=1.20.0"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-benchmark>=4.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/VIKASSAMVEL/edge-model-scheduler"
+Documentation = "https://github.com/VIKASSAMVEL/edge-model-scheduler/tree/main/docs"
+Repository = "https://github.com/VIKASSAMVEL/edge-model-scheduler.git"
+Issues = "https://github.com/VIKASSAMVEL/edge-model-scheduler/issues"
+Discussions = "https://github.com/VIKASSAMVEL/edge-model-scheduler/discussions"
