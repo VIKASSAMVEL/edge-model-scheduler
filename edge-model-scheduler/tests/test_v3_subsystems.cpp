@@ -353,9 +353,9 @@ void test_metrics_exporter() {
 void test_shm_throughput_benchmark() {
     std::cout << "[V3-Test 9] ShmRingBuffer throughput benchmark... ";
 
-    // Simulate 1080p frame transfer (6.2MB per frame)
-    const uint32_t frame_size = 1920 * 1080 * 3; // RGB
-    const uint32_t slot_count = 16;
+    // Safe buffer sizing suitable for constrained container /dev/shm partitions
+    const uint32_t frame_size = 640 * 480 * 3; // 921 KB
+    const uint32_t slot_count = 4; // ~3.7 MB total
 
     ShmRingBuffer ring("/test_ring_bench", slot_count, frame_size, ShmRole::PRODUCER);
 
