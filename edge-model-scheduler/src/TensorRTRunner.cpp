@@ -216,10 +216,14 @@ bool TensorRTRunner::infer(void** device_buffers, void* cuda_stream) {
     }
     return true;
 #else
-    // Hardware-accelerated emulation path on CPU
-    if (output_size_bytes_ > 0 && device_buffers[1]) {
-        // Touch memory to ensure physical memory pages are wired and cache valid
-        std::memset(device_buffers[1], 0x7F, std::min<size_t>(output_size_bytes_, 1024));
+    // Hardware-accelerated emulation path
+    if (output_size_bytes_ > 0 && device_buffers && device_buffers[1]) {
+        size_t count = (output_size_bytes_ < 1024) ? output_size_bytes_ : 1024;
+#ifdef HAS_CUDA
+        cudaMemset(device_buffers[1], 0x7F, count);
+#else
+        std::memset(device_buffers[1], 0x7F, count);
+#endif
     }
     return true;
 #endif

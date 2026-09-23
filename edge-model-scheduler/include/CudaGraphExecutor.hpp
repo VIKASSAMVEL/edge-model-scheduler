@@ -169,6 +169,14 @@ public:
         // ... caller should have launched updated kernels ...
         cudaStreamEndCapture(stream, &new_graph);
 
+#if defined(CUDART_VERSION) && (CUDART_VERSION >= 12000)
+        cudaGraphExecUpdateResultInfo result_info{};
+        cudaError_t err = cudaGraphExecUpdate(graph_exec_, new_graph, &result_info);
+        cudaGraphDestroy(new_graph);
+        if (err != cudaSuccess || result_info.result != cudaGraphExecUpdateSuccess) {
+            return false;
+        }
+#else
         cudaGraphExecUpdateResult update_result;
         cudaError_t err = cudaGraphExecUpdate(
             graph_exec_, new_graph, nullptr, &update_result);
@@ -178,6 +186,7 @@ public:
             // Topology changed — need full re-instantiation
             return false;
         }
+#endif
 #endif
         return true;
     }

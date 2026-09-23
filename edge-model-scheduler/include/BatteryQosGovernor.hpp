@@ -8,6 +8,11 @@
 #include <fstream>
 #include <cmath>
 #include <unordered_map>
+#include <algorithm>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 
 namespace edge_scheduler {
 
@@ -35,7 +40,7 @@ public:
     // Update battery state directly (from ROS 2 sensor_msgs/BatteryState or daemon poll)
     void update_telemetry(float soc, bool is_charging = false, float voltage = 16.8f, float current = 2.5f) {
         std::lock_guard<std::mutex> lock(mutex_);
-        telemetry_.soc_percent = std::max(0.0f, std::min(100.0f, soc));
+        telemetry_.soc_percent = (std::max)(0.0f, (std::min)(100.0f, soc));
         telemetry_.is_charging = is_charging;
         telemetry_.voltage_v = voltage;
         telemetry_.current_a = current;

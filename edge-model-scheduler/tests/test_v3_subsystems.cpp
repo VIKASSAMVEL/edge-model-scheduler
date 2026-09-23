@@ -128,8 +128,12 @@ void test_cuda_ipc_allocator() {
     void* imported = CudaIpcAllocator::import_handle(handle);
     assert(imported != nullptr);
 
-    // Write through imported pointer (non-CUDA: same heap pointer)
+    // Write through imported pointer
+#if defined(HAS_CUDA) && defined(__linux__)
+    cudaMemset(imported, 0xAB, 64);
+#else
     std::memset(imported, 0xAB, 64);
+#endif
 
     // Release
     CudaIpcAllocator::release_imported(imported);

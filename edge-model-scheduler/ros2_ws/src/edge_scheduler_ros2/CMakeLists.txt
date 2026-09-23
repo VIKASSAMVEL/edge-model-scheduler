@@ -55,9 +55,25 @@ ament_target_dependencies(multi_camera_perception_node
 
 target_link_libraries(multi_camera_perception_node pthread)
 
+add_executable(autoware_pointcloud_zero_copy_node
+  src/autoware_pointcloud_zero_copy_node.cpp
+  ${SCHEDULER_SOURCES}
+)
+
+ament_target_dependencies(autoware_pointcloud_zero_copy_node
+  rclcpp
+  sensor_msgs
+  std_msgs
+  geometry_msgs
+  cv_bridge
+)
+
+target_link_libraries(autoware_pointcloud_zero_copy_node pthread rt)
+
 install(TARGETS
   obstacle_arbiter_node
   multi_camera_perception_node
+  autoware_pointcloud_zero_copy_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

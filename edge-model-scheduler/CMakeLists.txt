@@ -56,9 +56,17 @@ set(CORE_SOURCES
     src/TensorRTRunner.cpp
 )
 
-add_library(scheduler_core SHARED ${CORE_SOURCES})
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+if(WIN32)
+  add_library(scheduler_core STATIC ${CORE_SOURCES})
+else()
+  add_library(scheduler_core SHARED ${CORE_SOURCES})
+endif()
 
-set(CORE_LINK_LIBS pthread)
+set(CORE_LINK_LIBS "")
+if(UNIX OR MINGW)
+  list(APPEND CORE_LINK_LIBS pthread)
+endif()
 if(TENSORRT_LIBRARY)
   list(APPEND CORE_LINK_LIBS ${TENSORRT_LIBRARY})
 endif()
@@ -120,6 +128,11 @@ add_test(NAME ImpossibleWorkloadBenchmark COMMAND impossible_workload_benchmark)
 add_executable(test_ros2_autoware_pipeline tests/test_ros2_autoware_pipeline.cpp)
 target_link_libraries(test_ros2_autoware_pipeline PRIVATE scheduler_core)
 add_test(NAME AutowarePerceptionPipelineTests COMMAND test_ros2_autoware_pipeline)
+
+# ── Autoware Universe Zero-Copy PointCloud Pipeline Test ────
+add_executable(test_autoware_zero_copy_pipeline tests/test_autoware_zero_copy_pipeline.cpp)
+target_link_libraries(test_autoware_zero_copy_pipeline PRIVATE scheduler_core)
+add_test(NAME AutowareZeroCopyPipelineTests COMMAND test_autoware_zero_copy_pipeline)
 
 # ── Multimodal VLM Co-Scheduler Test ────────────────────────
 add_executable(test_vlm_coscheduler tests/test_vlm_coscheduler.cpp)

@@ -792,7 +792,8 @@ private:
     @media (max-width: 600px) {
       .camera-grid { grid-template-columns: 1fr; }
     }
-
+)raw"
+        << R"raw(
     .cam-card {
       background: var(--bg-surface);
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1120,7 +1121,8 @@ private:
         </div>
       </div>
     </section>
-
+)raw"
+        << R"raw(
     <!-- Tile 6 (Span 2x1): Interactive Hardware Chaos & Fault Injection Deck -->
     <section class="bento-card span-2x1">
       <div class="card-top">

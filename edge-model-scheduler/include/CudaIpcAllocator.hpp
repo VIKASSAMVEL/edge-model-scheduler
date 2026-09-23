@@ -35,7 +35,7 @@ namespace edge_scheduler {
  */
 
 struct IpcGpuHandle {
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
     cudaIpcMemHandle_t handle;
 #else
     uint8_t handle[64]; // Placeholder for cross-platform compilation
@@ -48,7 +48,7 @@ struct IpcGpuHandle {
 class CudaIpcAllocator {
 public:
     CudaIpcAllocator(uint32_t device_id = 0) : device_id_(device_id) {
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
         cudaError_t err = cudaSetDevice(device_id);
         if (err != cudaSuccess) {
             throw std::runtime_error(
@@ -68,7 +68,7 @@ public:
         result.size_bytes = size_bytes;
         result.device_ordinal = device_id_;
 
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
         void* dev_ptr = nullptr;
         cudaError_t err = cudaMalloc(&dev_ptr, size_bytes);
         if (err != cudaSuccess || !dev_ptr) {
@@ -103,7 +103,7 @@ public:
             throw std::invalid_argument("Invalid IPC handle");
         }
 
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
         void* dev_ptr = nullptr;
         cudaError_t err = cudaIpcOpenMemHandle(
             &dev_ptr, ipc_handle.handle, cudaIpcMemLazyEnablePeerAccess);
@@ -124,7 +124,7 @@ public:
      */
     static void release_imported(void* dev_ptr) {
         if (!dev_ptr) return;
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
         cudaIpcCloseMemHandle(dev_ptr);
 #endif
         // Non-CUDA: don't free — the producer owns the allocation
@@ -135,7 +135,7 @@ public:
      */
     void free_all() {
         for (void* ptr : owned_ptrs_) {
-#ifdef HAS_CUDA
+#if defined(HAS_CUDA) && defined(__linux__)
             cudaFree(ptr);
 #else
             std::free(ptr);
