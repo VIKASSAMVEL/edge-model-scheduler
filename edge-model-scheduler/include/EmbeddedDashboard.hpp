@@ -147,8 +147,20 @@ public:
         }
     }
 
+    void set_supplier(MetricsSupplier supplier) {
+        supplier_ = supplier;
+    }
+
     void set_chaos_callback(ChaosCallback cb) {
         chaos_callback_ = cb;
+    }
+
+    bool is_running() const {
+        return running_.load();
+    }
+
+    uint16_t port() const {
+        return port_;
     }
 
 private:
