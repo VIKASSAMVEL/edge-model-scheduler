@@ -33,6 +33,12 @@
 </p>
 
 <p align="center">
+  <a href="EdgeModelScheduler_Report_Final_v4.docx"><strong>📄 Enterprise Technical Report (v4.0 .docx)</strong></a> •
+  <a href="https://vikassamvel.github.io/edge-model-scheduler/"><strong>🏎️ Live Bento Cockpit</strong></a> •
+  <a href="outreach/EXECUTIVE_OUTREACH_DOSSIER.md"><strong>💼 Executive Dossier</strong></a>
+</p>
+
+<p align="center">
   <a href="#-the-unmet-systems-problem">The Problem</a> •
   <a href="#-why-existing-runtimes-fail-under-overload">Why Existing Runtimes Fail</a> •
   <a href="#-the-impossible-workload-experiment">Impossible Workload</a> •
@@ -209,8 +215,14 @@ EdgeModelScheduler features a production-grade, zero-bloat **Bento Grid** missio
 # Launch the C++ embedded daemon on :9090
 ./build/edge_model_scheduler_daemon --port 9090
 
-# Or preview the standalone Bento dashboard directly in your browser:
-# Open edge-model-scheduler/dashboard/index.html
+# Run Autonomous Vehicle High-Rate Sensor Replay & Comparative Benchmark (200 sweeps)
+./build/ems_dataset_replay 200
+
+# Inspect and audit ASIL-D Flight Recorder forensic flight logs
+./build/ems_flight_recorder_cli telemetry.emsbag
+
+# Or preview the standalone Bento dashboard directly on GitHub Pages:
+# https://vikassamvel.github.io/edge-model-scheduler/
 ```
 
 ---

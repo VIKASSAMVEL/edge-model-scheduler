@@ -163,6 +163,10 @@ add_test(NAME Tier1SiliconSafetyTests COMMAND test_tier1_silicon_suite)
 add_executable(ems_flight_recorder_cli tools/ems_flight_recorder_cli.cpp)
 target_link_libraries(ems_flight_recorder_cli PRIVATE scheduler_core)
 
+# ── Autonomous Vehicle Dataset Replay & Benchmark Harness ───
+add_executable(ems_dataset_replay tools/ems_dataset_replay.cpp)
+target_link_libraries(ems_dataset_replay PRIVATE scheduler_core)
+
 # ── Python Bindings (pybind11) ──────────────────────────────
 find_package(pybind11 QUIET)
 if(pybind11_FOUND)
