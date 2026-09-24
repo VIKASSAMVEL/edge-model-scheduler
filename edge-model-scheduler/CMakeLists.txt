@@ -154,6 +154,15 @@ add_executable(test_device_graph_arbiter tests/test_device_graph_arbiter.cpp)
 target_link_libraries(test_device_graph_arbiter PRIVATE scheduler_core)
 add_test(NAME DeviceGraphArbiterTests COMMAND test_device_graph_arbiter)
 
+# ── Tier-1 Silicon & Autonomous Safety Suite ────────────────
+add_executable(test_tier1_silicon_suite tests/test_tier1_silicon_suite.cpp)
+target_link_libraries(test_tier1_silicon_suite PRIVATE scheduler_core)
+add_test(NAME Tier1SiliconSafetyTests COMMAND test_tier1_silicon_suite)
+
+# ── Forensic Flight Recorder CLI Tool ───────────────────────
+add_executable(ems_flight_recorder_cli tools/ems_flight_recorder_cli.cpp)
+target_link_libraries(ems_flight_recorder_cli PRIVATE scheduler_core)
+
 # ── Python Bindings (pybind11) ──────────────────────────────
 find_package(pybind11 QUIET)
 if(pybind11_FOUND)
