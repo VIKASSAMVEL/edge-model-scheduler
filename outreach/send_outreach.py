@@ -112,55 +112,40 @@ def generate_email_content(target):
     title = target["title"]
 
     if target["type"] == "nvidia":
-        subject = "B.Tech Final Year (Vel Tech) — Built Low-Latency C++17 Edge AI Runtime (vs. Triton & Isaac ROS), Seeking Systems Opportunities"
+        subject = "Final-year student (Vel Tech) — built low-latency C++17 runtime vs. Triton & ROS bottlenecks"
         
         plain_text = f"""Hi {first_name},
 
-I came across your profile on LinkedIn and wanted to reach out directly — because NVIDIA isn't just a company I admire, it's the company building the exact hardware and compute foundations I've spent my college years studying and writing code for.
+I'm reaching out directly because I follow your work on autonomous machines at NVIDIA and wanted to share a low-latency systems project I've been building.
 
-I'm Vikas Samvel, a final-year B.Tech Computer Science Engineering student at Vel Tech University, Chennai. While most students around me focus on web applications or high-level AI wrappers, I've dedicated my time to understanding what happens under the hood: bare-metal C++17, Linux kernel memory primitives, lock-free concurrency, and GPU runtime architectures.
+I'm Vikas Samvel, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.
 
-Over the past several months, I've been building an open-source, deterministic edge AI co-scheduler and runtime from scratch in C++17 (EdgeModelScheduler v4.0). I built it specifically to study and address what I saw as critical architectural bottlenecks in today's edge autonomy stacks:
+Over the last few months, I built an open-source deterministic edge AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I wanted to understand why current edge inference pipelines struggle with latency consistency on Jetson and DRIVE platforms:
 
-— NVIDIA Triton: Triton is the gold standard for datacenter inference clusters, but on constrained edge SoCs (Jetson AGX Orin / DRIVE Thor), its 1,900 MB idle memory footprint and datacenter dynamic batching queues introduce non-deterministic tail latency spikes under bursty sensor workloads.
-— ROS 2 & Isaac ROS: Standard DDS middleware forces sequential host-to-device memory copies and serialization steps for large sensor payloads (12MB LiDAR pointclouds / 4K camera frames), burning critical PCIe and CPU headroom before inference even starts. Under sensor burst jitter, unmanaged queues suffer severe tail blowout (P99 > 73 ms) with a 35% critical deadline failure rate.
-— TensorRT: While TensorRT compiles exceptional single-model engines, it lacks a hardware-aware cross-model arbiter when concurrent perception models compete for Ampere/Blackwell GPU SMs and dual DLA engines under thermal downclocking (82°C DVFS throttle).
+1. Triton is great for datacenter servers, but on edge hardware like Jetson Orin, its ~1.9 GB idle footprint and dynamic batching queues cause unpredictable latency spikes when sensors spike.
+2. ROS 2 and Isaac ROS pass sensor streams through DDS middleware, which forces multiple serialization steps and memory copies for 4K video or LiDAR pointclouds. In my benchmarks under burst jitter, unmanaged queues had a P99 latency above 73 ms and missed roughly 35% of deadlines.
+3. TensorRT optimizes individual models, but doesn't coordinate multi-model workloads competing for GPU cores and DLAs when the chip hits thermal throttling.
 
-To address these challenges, I engineered a deterministic co-scheduling runtime that dispatches concurrent neural models in under 15 nanoseconds with zero heap allocations in the critical path:
+To test alternatives, I wrote a C++17 runtime with zero heap allocations on the critical path:
+- CUDA IPC zero-copy adapter: passes PointCloud2 and camera frames across processes through /dev/shm virtual memory handles, bypassing DDS serialization at 12.2 GB/s (<15 µs latency).
+- Lock-free ring buffer: custom SPSC circular ring with cacheline-isolated atomics (alignas(64)), avoiding lock contention and CPU cache-line bouncing.
+- Hardware co-scheduler: balances tasks between GPU streaming multiprocessors and DLAs. Under simulated 45 ms network stalls, it sheds stale frames and held a 0% deadline miss rate.
+- Thermal governor: steps secondary models down from FP16 to INT8 when reaching 82°C, reserving full precision for safety-critical paths.
+- Lean footprint: runs with a 4.8 MB resident memory footprint without external heavy frameworks.
 
-— Zero-Copy CUDA IPC TypeAdapter: Transports raw PointCloud2 LiDAR and 4K camera frames across process boundaries via 64-byte virtual memory handles over /dev/shm, bypassing ROS 2 DDS serialization at 12.23 GB/s throughput (<15 microseconds mapping latency)
-— Sub-15ns Lock-Free Arbiter: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating lock contention and CPU cache-line bouncing
-— Heterogeneous GPU/DLA Co-Scheduling & Jitter Shedding: Dynamically balances execution between GPU SMs and dual Deep Learning Accelerators (DLA). When sensor burst jitter strikes, it predictively sheds stale intermediate frames, maintaining a 0.00% deadline miss rate under 45ms network stalls (vs. 35% blowout in unmanaged baselines)
-— Closed-Loop Dynamic Precision Governor: Automatically degrades secondary perception models from FP16 to INT8 during 82°C thermal throttling while locking critical collision avoidance paths in full precision
-— ISO 26262 ASIL-D Telemetry Logger: A zero-allocation circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified .emsbag binaries upon safety island trips
-— Ultra-Lean Resident Footprint: Operates with an idle footprint of just 4.8 MB — ~396x leaner than Triton's 1.9 GB footprint
+I've made the code and benchmarks public:
+- Technical Report (PDF): https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf
+- Live Bento Dashboard: https://vikassamvel.github.io/edge-model-scheduler/
+- GitHub Repo: https://github.com/VIKASSAMVEL/edge-model-scheduler
 
-In short: it's a unified edge runtime combining the strengths of Triton and Isaac ROS, but with a 396x leaner footprint, sub-15ns lock-free dispatch, and verifiable determinism.
+I'm writing because I'm graduating soon and want to work on systems software and GPU runtimes at NVIDIA. I would love 15 minutes of your time to get your feedback and see where a junior engineer or intern with my background could fit into the Jetson, DRIVE Thor, or Isaac teams.
 
-I'm not writing to pitch a product — I'm writing because as I prepare to graduate, my goal is to work alongside the world-class engineers building NVIDIA's next-generation platforms. I want to bring this same systems mindset, obsession with low-level performance, and relentless work ethic to your team.
+If someone else on the engineering or recruiting team is better to speak with, I'd appreciate you passing this along.
 
-I have documented the complete architecture, cache-line profiling, and empirical benchmark data in an audited 30-section technical dossier:
-
-* Full Technical Intelligence Report (PDF):
-  https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf
-* Live Mission Control Bento Cockpit:
-  https://vikassamvel.github.io/edge-model-scheduler/
-* Production C++17 GitHub Repository (12/12 CTest Suites Passing):
-  https://github.com/VIKASSAMVEL/edge-model-scheduler
-
-I would be deeply grateful for a brief 15–20 minute conversation to introduce myself and learn where someone with my background could best contribute at NVIDIA — whether in an internship, new-grad systems software role, or junior engineer opening on the Jetson, DRIVE Thor, Autonomous Machines, or Isaac ROS platform teams.
-
-If there is an engineering lead or hiring manager on your team who would be the right person to speak with, an introduction would mean a great deal.
-
-Thank you for taking the time to read this — I know your schedule is demanding, and I truly respect your time.
-
-Looking forward to the possibility of connecting.
-
-Warm regards,
+Thanks for your time,
 Vikas Samvel
-Final-Year B.Tech CSE Student — Vel Tech University, Chennai
-Aspiring Systems Software & GPU Runtime Engineer
-Email: vikassamvel123@gmail.com | Phone: +91 97908 01678
+Final-Year B.Tech CSE Student, Vel Tech University, Chennai
+vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
 GitHub: https://github.com/VIKASSAMVEL
 """
@@ -170,70 +155,60 @@ GitHub: https://github.com/VIKASSAMVEL
 <head>
 <meta charset="utf-8">
 <style>
-  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #1e293b; background-color: #ffffff; margin: 0; padding: 0; }}
-  .container {{ max-width: 640px; margin: 0 auto; padding: 20px 16px; }}
-  p {{ margin: 0 0 16px 0; }}
-  ul {{ margin: 0 0 16px 0; padding-left: 20px; }}
-  li {{ margin-bottom: 10px; }}
-  .box {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 18px; margin: 20px 0; }}
-  .box-title {{ font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; }}
-  a {{ color: #2563eb; text-decoration: underline; font-weight: 600; }}
-  .footer {{ border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px; color: #475569; font-size: 14px; }}
-  .highlight {{ color: #0f172a; font-weight: 600; }}
+  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #1e293b; background-color: #ffffff; margin: 0; padding: 0; }}
+  .container {{ max-width: 620px; margin: 0 auto; padding: 20px 16px; }}
+  p {{ margin: 0 0 14px 0; }}
+  ol, ul {{ margin: 0 0 14px 0; padding-left: 20px; }}
+  li {{ margin-bottom: 8px; }}
+  .links-box {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin: 18px 0; }}
+  a {{ color: #2563eb; text-decoration: underline; }}
+  .footer {{ border-top: 1px solid #e2e8f0; padding-top: 14px; margin-top: 20px; color: #475569; font-size: 14px; }}
 </style>
 </head>
 <body>
 <div class="container">
   <p>Hi {first_name},</p>
 
-  <p>I came across your profile on LinkedIn and wanted to reach out directly &mdash; because <strong>NVIDIA</strong> isn't just a company I admire, it's the company building the exact hardware and compute foundations I've spent my college years studying and writing code for.</p>
+  <p>I'm reaching out directly because I follow your work on autonomous machines at NVIDIA and wanted to share a low-latency systems project I've been building.</p>
 
-  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech Computer Science Engineering student at Vel Tech University, Chennai. While most students around me focus on web applications or high-level AI wrappers, I've dedicated my time to understanding what happens under the hood: bare-metal C++17, Linux kernel memory primitives, lock-free concurrency, and GPU runtime architectures.</p>
+  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.</p>
 
-  <p>Over the past several months, I've been building an open-source, deterministic edge AI co-scheduler and runtime from scratch in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I built it specifically to study and address what I saw as critical architectural bottlenecks in today's edge autonomy stacks:</p>
+  <p>Over the last few months, I built an open-source deterministic edge AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I wanted to understand why current edge inference pipelines struggle with latency consistency on Jetson and DRIVE platforms:</p>
+
+  <ol>
+    <li><strong>Triton</strong> is great for datacenter servers, but on edge hardware like Jetson Orin, its ~1.9 GB idle footprint and dynamic batching queues cause unpredictable latency spikes when sensors spike.</li>
+    <li><strong>ROS 2 and Isaac ROS</strong> pass sensor streams through DDS middleware, which forces multiple serialization steps and memory copies for 4K video or LiDAR pointclouds. In my benchmarks under burst jitter, unmanaged queues had a P99 latency above 73 ms and missed roughly 35% of deadlines.</li>
+    <li><strong>TensorRT</strong> optimizes individual models, but doesn't coordinate multi-model workloads competing for GPU cores and DLAs when the chip hits thermal throttling.</li>
+  </ol>
+
+  <p>To test alternatives, I wrote a C++17 runtime with zero heap allocations on the critical path:</p>
 
   <ul>
-    <li><span class="highlight">NVIDIA Triton</span> is the gold standard for datacenter inference clusters, but on constrained edge SoCs (Jetson AGX Orin / DRIVE Thor), its 1,900 MB idle memory footprint and datacenter dynamic batching queues introduce non-deterministic tail latency spikes under bursty sensor workloads.</li>
-    <li><span class="highlight">ROS 2 &amp; Isaac ROS</span> route sensor traffic through DDS middleware, forcing sequential host-to-device memory copies and serialization steps for large sensor payloads (12MB LiDAR pointclouds / 4K camera frames), burning critical PCIe and CPU headroom before inference even starts. Under sensor burst jitter, unmanaged queues suffer severe tail blowout (P99 &gt; 73 ms) with a 35% critical deadline failure rate.</li>
-    <li><span class="highlight">TensorRT</span> compiles exceptional single-model engines, but lacks a hardware-aware cross-model arbiter when concurrent perception models compete for Ampere/Blackwell GPU SMs and dual DLA engines under thermal downclocking (82&deg;C DVFS throttle).</li>
+    <li><strong>CUDA IPC zero-copy adapter:</strong> passes PointCloud2 and camera frames across processes through <code>/dev/shm</code> virtual memory handles, bypassing DDS serialization at 12.2 GB/s (&lt;15 &mu;s latency).</li>
+    <li><strong>Lock-free ring buffer:</strong> custom SPSC circular ring with cacheline-isolated atomics (<code>alignas(64)</code>), avoiding lock contention and CPU cache-line bouncing.</li>
+    <li><strong>Hardware co-scheduler:</strong> balances tasks between GPU streaming multiprocessors and DLAs. Under simulated 45 ms network stalls, it sheds stale frames and held a 0% deadline miss rate.</li>
+    <li><strong>Thermal governor:</strong> steps secondary models down from FP16 to INT8 when reaching 82&deg;C, reserving full precision for safety-critical paths.</li>
+    <li><strong>Lean footprint:</strong> runs with a 4.8 MB resident memory footprint without external heavy frameworks.</li>
   </ul>
 
-  <p>To address these challenges, I engineered a deterministic co-scheduling runtime that dispatches concurrent neural models in <strong>under 15 nanoseconds</strong> with zero heap allocations in the critical path:</p>
-
-  <ul>
-    <li><strong>Zero-Copy CUDA IPC TypeAdapter:</strong> Transports raw PointCloud2 LiDAR and 4K camera frames across process boundaries via 64-byte virtual memory handles over <code>/dev/shm</code>, bypassing ROS 2 DDS serialization at <strong>12.23 GB/s throughput</strong> (&lt;15 microseconds mapping latency).</li>
-    <li><strong>Sub-15ns Lock-Free Arbiter:</strong> Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating lock contention and CPU cache-line bouncing.</li>
-    <li><strong>Heterogeneous GPU/DLA Co-Scheduling &amp; Jitter Shedding:</strong> Dynamically balances execution between GPU SMs and dual Deep Learning Accelerators (DLA). When sensor burst jitter strikes, it predictively sheds stale intermediate frames, maintaining a <strong>0.00% deadline miss rate</strong> under 45ms network stalls (vs. 35% blowout in unmanaged baselines).</li>
-    <li><strong>Closed-Loop Dynamic Precision Governor:</strong> Automatically degrades secondary perception models from FP16 to INT8 during 82&deg;C thermal throttling while locking critical collision avoidance paths in full precision.</li>
-    <li><strong>ISO 26262 ASIL-D Telemetry Logger:</strong> A zero-allocation circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified <code>.emsbag</code> binaries upon safety island trips.</li>
-    <li><strong>Ultra-Lean Resident Footprint:</strong> Operates with an idle footprint of just <strong>4.8 MB</strong> &mdash; ~396x leaner than Triton's 1.9 GB footprint.</li>
-  </ul>
-
-  <p><em>In short: it's a unified edge runtime combining the strengths of Triton and Isaac ROS, but with a 396x leaner footprint, sub-15ns lock-free dispatch, and verifiable determinism.</em></p>
-
-  <p>I'm not writing to pitch a product &mdash; I'm writing because as I prepare to graduate, my goal is to work alongside the world-class engineers building NVIDIA's next-generation platforms. I want to bring this same systems mindset, obsession with low-level performance, and relentless work ethic to your team.</p>
-
-  <div class="box">
-    <div class="box-title">Audited Research &amp; Deliverables</div>
+  <div class="links-box">
+    <div style="font-weight: 600; margin-bottom: 6px;">Project Resources:</div>
     <ul style="margin: 0; padding-left: 18px;">
-      <li style="margin-bottom: 6px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf">Full Technical Intelligence Report (PDF)</a> &mdash; 30-section audited architecture &amp; benchmark dossier</li>
-      <li style="margin-bottom: 6px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/">Live Mission Control Bento Cockpit</a> &mdash; Real-time hardware topology and interactive chaos injection</li>
-      <li><a href="https://github.com/VIKASSAMVEL/edge-model-scheduler">Production C++17 GitHub Repository</a> &mdash; 12/12 CTest suites passing, 100% green CI/CD</li>
+      <li style="margin-bottom: 4px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf">Technical Report (PDF)</a> &mdash; 30-section architecture and benchmark documentation</li>
+      <li style="margin-bottom: 4px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/">Live Bento Dashboard</a> &mdash; Interactive hardware topology and live simulator</li>
+      <li><a href="https://github.com/VIKASSAMVEL/edge-model-scheduler">GitHub Repository</a> &mdash; Full C++17 source with 12 passing test suites</li>
     </ul>
   </div>
 
-  <p>I would be deeply grateful for a brief <strong>15&ndash;20 minute conversation to introduce myself</strong> and learn where someone with my background could best contribute at NVIDIA &mdash; whether in an internship, new-grad systems software role, or junior engineer opening on the Jetson, DRIVE Thor, Autonomous Machines, or Isaac ROS platform teams.</p>
+  <p>I'm writing because I'm graduating soon and want to work on systems software and GPU runtimes at NVIDIA. I would love 15 minutes of your time to get your feedback and see where a junior engineer or intern with my background could fit into the Jetson, DRIVE Thor, or Isaac teams.</p>
 
-  <p>If there is an engineering lead or hiring manager on your team who would be the right person to speak with, an introduction would mean a great deal.</p>
+  <p>If someone else on the engineering or recruiting team is better to speak with, I'd appreciate you passing this along.</p>
 
-  <p>Thank you for taking the time to read this &mdash; I know your schedule is demanding, and I truly respect your time.</p>
-
-  <p>Looking forward to the possibility of connecting.</p>
+  <p>Thanks for your time,</p>
 
   <div class="footer">
-    <p style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a;">Warm regards,</p>
-    <p style="margin: 0 0 2px 0; font-weight: 600;">Vikas Samvel</p>
-    <p style="margin: 0 0 6px 0; color: #64748b;">Final-Year B.Tech CSE Student &mdash; Vel Tech University, Chennai<br>Aspiring Systems Software &amp; GPU Runtime Engineer</p>
+    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas Samvel</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Final-Year B.Tech CSE Student, Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikassamvel/">linkedin.com/in/vikassamvel</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a>
@@ -245,57 +220,41 @@ GitHub: https://github.com/VIKASSAMVEL
 """
 
     else: # panw
-        subject = "B.Tech Final Year (Vel Tech) — Built Deterministic C++17 AI Dataplane Runtime (vs. Single-Pass Gaps), Seeking Systems Roles"
+        subject = "Final-year student (Vel Tech) — built C++17 deterministic AI runtime vs. dataplane bottlenecks"
         
         plain_text = f"""Hi {first_name},
 
-I came across your profile on LinkedIn and wanted to reach out directly — because Palo Alto Networks isn't just a company I admire, it's the gold standard for high-throughput, low-latency security infrastructure that I've spent my college years studying.
+I'm reaching out directly because I follow Palo Alto Networks' dataplane engineering and wanted to share a low-latency systems project I've been building.
 
-I'm Vikas Samvel, a final-year B.Tech Computer Science Engineering student at Vel Tech University, Chennai. While most students around me focus on web applications or high-level AI wrappers, I've dedicated my time to understanding what happens under the hood: bare-metal C++17, Linux kernel memory primitives, lock-free concurrency, and deterministic dataplane architectures.
+I'm Vikas Samvel, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.
 
-Over the past several months, I've been building an open-source, deterministic AI co-scheduler and dataplane runtime from scratch in C++17 (EdgeModelScheduler v4.0). I built it specifically to study and address what I saw as a fundamental architectural collision in next-generation network security:
+Over the last few months, I built an open-source deterministic AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I wanted to study how hardware firewalls can run inline deep learning without breaking line-rate guarantees:
 
-Palo Alto Networks pioneered the Single-Pass Architecture, separating the Control Plane and Data Plane to ensure hardware-accelerated deep packet inspection without packet re-assembly penalties at line rate. However, as PAN-OS brings deep learning inline on edge appliances (e.g., PA-5400, PA-3400, PA-7000 series) for line-rate zero-day DNS tunneling detection, inline URL classification, and encrypted traffic analysis, a critical architectural challenge arises:
+1. Palo Alto Networks built the Single-Pass Architecture to inspect traffic at line rate without re-assembly delays. But as PAN-OS runs deep learning inline (for DNS tunneling detection, URL classification, or encrypted traffic), a bottleneck appears: network dataplanes work on microsecond deadlines, while ML inference engines like TensorRT or ONNX Runtime are asynchronous and queue-dependent.
+2. During traffic spikes or DDoS events, ML queues back up, pushing P99 tail latencies past 70 ms. This risks filling packet ring buffers or forcing appliances to bypass deep inspection.
+3. Standard ML frameworks have large memory footprints (hundreds of megabytes) and use coarse mutexes that cause cache bouncing across multicore packet processors.
 
-— Network dataplanes (DPDK / hardware NICs) operate with microsecond-level deterministic deadlines (sub-100µs budgets). In contrast, multi-tenant deep learning inference engines (TensorRT, ONNX Runtime) are fundamentally asynchronous and queue-dependent.
-— Under traffic bursts or adversarial DDoS storms, neural inference engines back up, creating multi-millisecond tail blowouts (>70 ms) that either exhaust packet buffer rings (causing dropped sessions) or force appliances to bypass deep inspection.
-— Standard ML runtimes carry heavy resident footprints (hundreds of MBs) and use coarse mutex locking that creates severe cache-line bouncing across multi-core dataplane processors.
+To test a solution, I engineered a C++17 runtime with zero heap allocations on the critical path:
+- Lock-free SPSC circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), avoiding cache bouncing across high-speed packet cores.
+- Direct shared-memory transport over /dev/shm, moving packet buffers to AI memory at 12.2 GB/s in under 15 microseconds.
+- Predictive queue defense: during burst traffic, it drops stale intermediate telemetry, keeping P99 latency at 29 ms (vs. 73 ms in standard FIFO queues) with zero packet buffer drops.
+- Dynamic precision governor: temporarily shifts deep inspection models from FP16 to INT8 during heavy load to prevent buffer exhaustion.
+- Tamper-proof telemetry recorder: a circular buffer (60,000 frames @ 1 kHz) logging decisions and temperatures with rolling SHA-256 signatures for audit compliance.
+- Lean footprint: runs in 4.8 MB resident memory with no heavy runtime dependencies.
 
-To solve this, I engineered an ultra-low-latency deterministic co-scheduler and zero-copy runtime that bridges high-speed DPDK-style packet rings directly to AI accelerators with zero heap allocation in the critical path:
+I've published the full implementation and benchmarks here:
+- Technical Report (PDF): https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf
+- Live Bento Dashboard: https://vikassamvel.github.io/edge-model-scheduler/
+- GitHub Repo: https://github.com/VIKASSAMVEL/edge-model-scheduler
 
-— Sub-15ns Lock-Free Dataplane Parity: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating CPU cache-line bouncing and lock contention across high-rate packet processing cores
-— Zero-Copy Direct-Memory Transport (12.23 GB/s): Maps network packet buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating CPU/PCIe memory copies
-— Predictive Jitter Shedding & Queue Defense: Under line-rate traffic bursts, the closed-loop scheduler predictively sheds stale intermediate telemetry, bounding P99 worst-case tail latency to 29.02 ms (vs. 73 ms+ queue runaway in unmanaged FIFO systems) and maintaining a 0.00% packet buffer drop rate
-— Dynamic Precision Degradation: Closed-loop governor automatically degrades deep packet inspection models from FP16 to INT8 during saturation storms, preventing packet buffer exhaustion while maintaining continuous inline inspection
-— High-Assurance Tamper-Proof Flight Recorder: Pre-allocated, zero-heap ring buffer (60,000 frames @ 1 kHz) logging inference decisions and thermals with rolling SHA-256 cryptographic signatures, providing immutable forensic audit trails for cyber incident compliance
-— Ultra-Lean 4.8 MB Resident Core: Built without external runtime dependencies, easily fitting into constrained on-box network processors
+I'm writing because I'm graduating soon and want to work on low-latency systems and dataplane software at Palo Alto Networks. I would love 15 minutes of your time to introduce myself and see where an entry-level engineer or intern with my profile could contribute on the Dataplane Engineering, Network Security, or PAN-OS core teams.
 
-In short: it's a unified runtime that resolves the collision between high-speed network dataplanes and deep learning inference, providing line-rate determinism that standard ML frameworks cannot achieve.
+If there is an engineering lead or hiring manager on your team who would be the right person to speak with, I'd appreciate you passing this along.
 
-I'm not writing to pitch a product — I'm writing because as I prepare to graduate, my goal is to work alongside the engineers building the world's most critical network security infrastructure. I want to bring this same systems mindset, obsession with low-level performance, and relentless work ethic to your team.
-
-I have documented the complete architecture, cache-line profiling, and empirical benchmark data in an audited 30-section technical dossier:
-
-* Full Enterprise Technical Intelligence Report (PDF):
-  https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf
-* Live Mission Control Bento Cockpit:
-  https://vikassamvel.github.io/edge-model-scheduler/
-* Production C++17 GitHub Repository (12/12 CTest Suites Passing):
-  https://github.com/VIKASSAMVEL/edge-model-scheduler
-
-I would be deeply grateful for a brief 15–20 minute conversation to introduce myself and learn where someone with my background could best contribute at Palo Alto Networks — whether in an internship, new-grad systems role, or junior engineer opening within the Hardware Dataplane Engineering team, Network Security Platforms, Unit 42 research, or the PAN-OS core engineering groups.
-
-If there is an engineering lead or hiring manager on your team who would be the right person to speak with, an introduction would mean a great deal.
-
-Thank you for taking the time to read this — I know your schedule is demanding, and I truly respect your time.
-
-Looking forward to the possibility of connecting.
-
-Warm regards,
+Thanks for your time,
 Vikas Samvel
-Final-Year B.Tech CSE Student — Vel Tech University, Chennai
-Aspiring Systems Software & Dataplane Engineer
-Email: vikassamvel123@gmail.com | Phone: +91 97908 01678
+Final-Year B.Tech CSE Student, Vel Tech University, Chennai
+vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
 GitHub: https://github.com/VIKASSAMVEL
 """
@@ -305,72 +264,61 @@ GitHub: https://github.com/VIKASSAMVEL
 <head>
 <meta charset="utf-8">
 <style>
-  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #1e293b; background-color: #ffffff; margin: 0; padding: 0; }}
-  .container {{ max-width: 640px; margin: 0 auto; padding: 20px 16px; }}
-  p {{ margin: 0 0 16px 0; }}
-  ul {{ margin: 0 0 16px 0; padding-left: 20px; }}
-  li {{ margin-bottom: 10px; }}
-  .box {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 18px; margin: 20px 0; }}
-  .box-title {{ font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; }}
-  a {{ color: #2563eb; text-decoration: underline; font-weight: 600; }}
-  .footer {{ border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px; color: #475569; font-size: 14px; }}
-  .highlight {{ color: #0f172a; font-weight: 600; }}
+  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #1e293b; background-color: #ffffff; margin: 0; padding: 0; }}
+  .container {{ max-width: 620px; margin: 0 auto; padding: 20px 16px; }}
+  p {{ margin: 0 0 14px 0; }}
+  ol, ul {{ margin: 0 0 14px 0; padding-left: 20px; }}
+  li {{ margin-bottom: 8px; }}
+  .links-box {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin: 18px 0; }}
+  a {{ color: #2563eb; text-decoration: underline; }}
+  .footer {{ border-top: 1px solid #e2e8f0; padding-top: 14px; margin-top: 20px; color: #475569; font-size: 14px; }}
 </style>
 </head>
 <body>
 <div class="container">
   <p>Hi {first_name},</p>
 
-  <p>I came across your profile on LinkedIn and wanted to reach out directly &mdash; because <strong>Palo Alto Networks</strong> isn't just a company I admire, it's the gold standard for high-throughput, low-latency security infrastructure that I've spent my college years studying.</p>
+  <p>I'm reaching out directly because I follow Palo Alto Networks' dataplane engineering and wanted to share a low-latency systems project I've been building.</p>
 
-  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech Computer Science Engineering student at Vel Tech University, Chennai. While most students around me focus on web applications or high-level AI wrappers, I've dedicated my time to understanding what happens under the hood: bare-metal C++17, Linux kernel memory primitives, lock-free concurrency, and deterministic dataplane architectures.</p>
+  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.</p>
 
-  <p>Over the past several months, I've been building an open-source, deterministic AI co-scheduler and dataplane runtime from scratch in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I built it specifically to study and address what I saw as a fundamental architectural collision in next-generation network security:</p>
+  <p>Over the last few months, I built an open-source deterministic AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I wanted to study how hardware firewalls can run inline deep learning without breaking line-rate guarantees:</p>
 
-  <p>Palo Alto Networks pioneered the <strong>Single-Pass Architecture</strong>, separating the Control Plane and Data Plane to ensure hardware-accelerated deep packet inspection without packet re-assembly penalties at line rate. However, as PAN-OS brings deep learning inline on edge appliances (e.g., PA-5400, PA-3400, PA-7000 series) for line-rate zero-day DNS tunneling detection, inline URL classification, and encrypted traffic analysis, a critical architectural challenge arises:</p>
+  <ol>
+    <li><strong>Palo Alto Networks</strong> built the Single-Pass Architecture to inspect traffic at line rate without re-assembly delays. But as PAN-OS runs deep learning inline (for DNS tunneling detection, URL classification, or encrypted traffic), a bottleneck appears: network dataplanes work on microsecond deadlines, while ML inference engines like TensorRT or ONNX Runtime are asynchronous and queue-dependent.</li>
+    <li><strong>During traffic spikes or DDoS events</strong>, ML queues back up, pushing P99 tail latencies past 70 ms. This risks filling packet ring buffers or forcing appliances to bypass deep inspection.</li>
+    <li><strong>Standard ML frameworks</strong> have large memory footprints (hundreds of megabytes) and use coarse mutexes that cause cache bouncing across multicore packet processors.</li>
+  </ol>
 
-  <ul>
-    <li><span class="highlight">Network dataplanes</span> (DPDK / hardware NICs) operate with microsecond-level deterministic deadlines (sub-100&mu;s budgets). In contrast, multi-tenant deep learning inference engines (TensorRT, ONNX Runtime) are fundamentally asynchronous and queue-dependent.</li>
-    <li><span class="highlight">Under traffic bursts or adversarial DDoS storms</span>, neural inference engines back up, creating multi-millisecond tail blowouts (&gt;70 ms) that either exhaust packet buffer rings (causing dropped sessions) or force appliances to bypass deep inspection.</li>
-    <li><span class="highlight">Standard ML runtimes</span> carry heavy resident footprints (hundreds of MBs) and use coarse mutex locking that creates severe cache-line bouncing across multi-core dataplane processors.</li>
-  </ul>
-
-  <p>To solve this, I engineered an ultra-low-latency deterministic co-scheduler and zero-copy runtime that bridges high-speed DPDK-style packet rings directly to AI accelerators with zero heap allocation in the critical path:</p>
+  <p>To test a solution, I engineered a C++17 runtime with zero heap allocations on the critical path:</p>
 
   <ul>
-    <li><strong>Sub-15ns Lock-Free Dataplane Parity:</strong> Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating CPU cache-line bouncing and lock contention across high-rate packet processing cores.</li>
-    <li><strong>Zero-Copy Direct-Memory Transport (12.23 GB/s):</strong> Maps network packet buffers directly to AI acceleration memory in &lt;15 microseconds via 64-byte virtual handles over <code>/dev/shm</code>, eliminating CPU/PCIe memory copies.</li>
-    <li><strong>Predictive Jitter Shedding &amp; Queue Defense:</strong> Under line-rate traffic bursts, the closed-loop scheduler predictively sheds stale intermediate telemetry, bounding P99 worst-case tail latency to <strong>29.02 ms</strong> (vs. 73 ms+ queue runaway in unmanaged FIFO systems) and maintaining a <strong>0.00% packet buffer drop rate</strong>.</li>
-    <li><strong>Dynamic Precision Degradation:</strong> Closed-loop governor automatically degrades deep packet inspection models from FP16 to INT8 during saturation storms, preventing packet buffer exhaustion while maintaining continuous inline inspection.</li>
-    <li><strong>High-Assurance Tamper-Proof Flight Recorder:</strong> Pre-allocated, zero-heap ring buffer (60,000 frames @ 1 kHz) logging inference decisions and thermals with rolling SHA-256 cryptographic signatures, providing immutable forensic audit trails for cyber incident compliance.</li>
-    <li><strong>Ultra-Lean 4.8 MB Resident Core:</strong> Built without external runtime dependencies, easily fitting into constrained on-box network processors.</li>
+    <li><strong>Lock-free ring buffers:</strong> custom SPSC circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), avoiding cache bouncing across high-speed packet cores.</li>
+    <li><strong>Direct shared-memory transport:</strong> moves packet buffers to AI memory over <code>/dev/shm</code> at 12.2 GB/s in under 15 microseconds.</li>
+    <li><strong>Predictive queue defense:</strong> during burst traffic, it drops stale intermediate telemetry, keeping P99 latency at 29 ms (vs. 73 ms in standard FIFO queues) with zero packet buffer drops.</li>
+    <li><strong>Dynamic precision governor:</strong> temporarily shifts deep inspection models from FP16 to INT8 during heavy load to prevent buffer exhaustion.</li>
+    <li><strong>Tamper-proof telemetry recorder:</strong> a circular buffer (60,000 frames @ 1 kHz) logging decisions and temperatures with rolling SHA-256 signatures for audit compliance.</li>
+    <li><strong>Lean footprint:</strong> runs in 4.8 MB resident memory with no heavy runtime dependencies.</li>
   </ul>
 
-  <p><em>In short: it's a unified runtime that resolves the collision between high-speed network dataplanes and deep learning inference, providing line-rate determinism that standard ML frameworks cannot achieve.</em></p>
-
-  <p>I'm not writing to pitch a product &mdash; I'm writing because as I prepare to graduate, my goal is to work alongside the engineers building the world's most critical network security infrastructure. I want to bring this same systems mindset, obsession with low-level performance, and relentless work ethic to your team.</p>
-
-  <div class="box">
-    <div class="box-title">Audited Research &amp; Deliverables</div>
+  <div class="links-box">
+    <div style="font-weight: 600; margin-bottom: 6px;">Project Resources:</div>
     <ul style="margin: 0; padding-left: 18px;">
-      <li style="margin-bottom: 6px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf">Full Enterprise Technical Intelligence Report (PDF)</a> &mdash; 30-section audited architecture &amp; benchmark dossier</li>
-      <li style="margin-bottom: 6px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/">Live Mission Control Bento Cockpit</a> &mdash; Real-time hardware topology and interactive chaos injection</li>
-      <li><a href="https://github.com/VIKASSAMVEL/edge-model-scheduler">Production C++17 GitHub Repository</a> &mdash; 12/12 CTest suites passing, 100% green CI/CD</li>
+      <li style="margin-bottom: 4px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf">Technical Report (PDF)</a> &mdash; 30-section architecture and benchmark documentation</li>
+      <li style="margin-bottom: 4px;"><a href="https://vikassamvel.github.io/edge-model-scheduler/">Live Bento Dashboard</a> &mdash; Interactive hardware topology and live simulator</li>
+      <li><a href="https://github.com/VIKASSAMVEL/edge-model-scheduler">GitHub Repository</a> &mdash; Full C++17 source with 12 passing test suites</li>
     </ul>
   </div>
 
-  <p>I would be deeply grateful for a brief <strong>15&ndash;20 minute conversation to introduce myself</strong> and learn where someone with my background could best contribute at Palo Alto Networks &mdash; whether in an internship, new-grad systems role, or junior engineer opening within the Hardware Dataplane Engineering team, Network Security Platforms, Unit 42 research, or the PAN-OS core engineering groups.</p>
+  <p>I'm writing because I'm graduating soon and want to work on low-latency systems and dataplane software at Palo Alto Networks. I would love 15 minutes of your time to introduce myself and see where an entry-level engineer or intern with my profile could contribute on the Dataplane Engineering, Network Security, or PAN-OS core teams.</p>
 
-  <p>If there is an engineering lead or hiring manager on your team who would be the right person to speak with, an introduction would mean a great deal.</p>
+  <p>If there is an engineering lead or hiring manager on your team who would be the right person to speak with, I'd appreciate you passing this along.</p>
 
-  <p>Thank you for taking the time to read this &mdash; I know your schedule is demanding, and I truly respect your time.</p>
-
-  <p>Looking forward to the possibility of connecting.</p>
+  <p>Thanks for your time,</p>
 
   <div class="footer">
-    <p style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a;">Warm regards,</p>
-    <p style="margin: 0 0 2px 0; font-weight: 600;">Vikas Samvel</p>
-    <p style="margin: 0 0 6px 0; color: #64748b;">Final-Year B.Tech CSE Student &mdash; Vel Tech University, Chennai<br>Aspiring Systems Software &amp; Dataplane Engineer</p>
+    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas Samvel</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Final-Year B.Tech CSE Student, Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikassamvel/">linkedin.com/in/vikassamvel</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a>
