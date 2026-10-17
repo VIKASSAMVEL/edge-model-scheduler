@@ -1,0 +1,176 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.50in,top=0.38in,bottom=0.38in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\definecolor{darkblue}{RGB}{0,0,0}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\renewcommand{\baselinestretch}{1.00}
+
+\titleformat{\section}
+{\scshape\large}
+{}{0em}{}[\color{black}\titlerule\vspace{2pt}]
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+
+\newcommand{\resumeItem}[1]{\item{\small #1}}
+\setlist[itemize]{leftmargin=*, itemsep=0.8pt, topsep=1.2pt, parsep=0.2pt}
+
+\newcommand{\resumeSubheading}[4]{
+\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+  \textbf{\small #1} & \small #2 \\
+  \textit{\small #3} & \textit{\small #4} \\
+\end{tabular*}\vspace{2.5pt}
+}
+
+\newcommand{\resumeSubheadingSimple}[2]{
+\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+  \textbf{\small #1} & \small #2 \\
+\end{tabular*}\vspace{2.5pt}
+}
+
+\usepackage{array}
+
+\begin{document}
+\begin{center}
+    {\Large \textbf{S. VIKAS}} \\[2pt]
+    {\large \textbf{Systems Software \& Edge AI Engineer}} \\[2pt]
+    {\footnotesize
+    Chennai, Tamil Nadu \ $|$ \ +91-9790801678 \ $|$ \
+    \href{mailto:vikassamvel123@gmail.com}{vikassamvel123@gmail.com} \\[1.5pt]
+    \href{https://linkedin.com/in/vikas-s070106}{LinkedIn: linkedin.com/in/vikas-s070106}
+    \ $|$ \
+    \href{https://github.com/VIKASSAMVEL}{GitHub: github.com/vikassamvel}
+    \ $|$ \
+    \href{https://vikas-world.vercel.app/}{vikas-world.vercel.app}
+    }
+\end{center}
+
+\vspace{-4pt}
+
+\section*{Professional Summary}
+\small
+Systems Software and Edge AI Engineer (B.Tech CSE, 2027) with a deep technical focus on \textbf{bare-metal C++17, Linux kernel memory management, lock-free concurrency, and deterministic GPU/edge runtimes}. Architected \textbf{EdgeModelScheduler v4.0}, an open-source C++17 deterministic co-scheduler for constrained edge SoCs with zero-copy CUDA IPC (12.23 GB/s), sub-15ns lock-free SPSC rings, and an ISO 26262 ASIL-D flight recorder. Hands-on R\&D experience at \textbf{Ashok Leyland (Guided by DGM)} developing embedded C++ control systems on physical robots handling high-frequency LiDAR and encoder sensor streams. Winner of the national Agentic AI Hackathon 2025, with three patents filed and two research papers under review.
+
+\section*{Education}
+\resumeSubheading
+  {Vel Tech Rangarajan Dr. Sagunthala R\&D Institute of Science and Technology, Chennai}{2023 -- 2027}
+  {B.Tech -- Computer Science and Engineering}{\textbf{CGPA: 8.67 / 10}}
+\resumeSubheadingSimple
+  {St. Mary's Matriculation Boys Higher Secondary School -- Class XII, Tamil Nadu State Board}{80.33\% (2023)}
+\resumeSubheadingSimple
+  {St. Mary's Matriculation Boys Higher Secondary School -- Class X, Tamil Nadu State Board}{100.00\% (2021)}
+
+\section*{Technical Skills}
+\begin{itemize}
+    \item \textbf{Programming Languages:} C++, C++17, C, Java (Java 21), Python, SQL, JavaScript (ES6+), TypeScript, Bash/POSIX Shell, PHP
+    \item \textbf{Low-Level \& Systems Engineering:} Bare-Metal C++, POSIX Threads, Lock-Free SPSC/MPSC Queues (\texttt{alignas(64)}), Cache-Line Optimization, Linux Shared Memory (\texttt{/dev/shm}, \texttt{mmap}), Zero-Copy CUDA IPC (12.23 GB/s), Atomics, Memory Barriers
+    \item \textbf{AI \& Acceleration Runtime:} CUDA, TensorRT, ONNX Runtime, Deep Learning Accelerators (DLA), PyTorch, OpenCV, YOLOv8, YOLOv12 (Ultralytics), Quantization (INT8/FP16, RKNN), Thermal DVFS Governors, Ollama, Azure AI Foundry, AI Agents
+    \item \textbf{Embedded \& Hardware Systems:} Teensy 4.1, Rock 5 ITX, Raspberry Pi, GPIO (\texttt{gpiozero}), High-Frequency LiDAR Point Clouds, Rotary Encoders, Hardware Relays, Closed-Loop Motor Actuation
+    \item \textbf{Backend \& Enterprise Stack:} Java 21, Spring Boot, Spring Security, Spring Data, REST API Design, STOMP over WebSocket, JWT Authentication, BCrypt, Node.js, Express.js, Flask
+    \item \textbf{Databases \& DevOps:} MySQL, MSSQL, MongoDB (Atlas), Firebase; Linux (Ubuntu/Debian), Git, GitHub Actions (CI/CD), Docker, CMake, GTest, Postman
+    \item \textbf{Core Computer Science:} Data Structures and Algorithms, Operating Systems, DBMS, Computer Networks, Software Engineering, System Design, SDLC
+\end{itemize}
+
+\section*{Professional Experience}
+
+\resumeSubheading
+  {Project Intern}{Mar 2024 -- Dec 2024}
+  {Ashok Leyland (Guided by DGM)}{Chennai, India}
+\begin{itemize}
+    \resumeItem{Owned the \textbf{end-to-end lifecycle} of an autonomous agricultural robot, from conceptual design and system architecture to a working hardware prototype under DGM mentorship, directly contributing to a \textbf{patent filing} and research publications.}
+    \resumeItem{Engineered embedded \textbf{C++} control logic on a Teensy 4.1 micro-controller handling high-frequency \textbf{LiDAR} and optical encoder sensor streams for deterministic real-time actuation and closed-loop obstacle avoidance.}
+    \resumeItem{Quantized and deployed a custom \textbf{YOLOv8} model via \textbf{RKNN} on a Rock 5 ITX, achieving sub-40ms edge inference and real-time weed classification in field environments.}
+\end{itemize}
+
+\resumeSubheading
+  {AI Engineer Intern}{Aug 2025 -- Oct 2025}
+  {Siter Academy, Norway (Remote)}{Oslo, Norway}
+\begin{itemize}
+    \resumeItem{Built \textbf{MedPal AI}, a transformer-based medical assistant combining Generative AI, Computer Vision, NLP, and Document Intelligence, as part of a team project under an industry research mentor.}
+    \resumeItem{Engineered an OCR pipeline (Tesseract, OpenCV) for pill recognition and integrated a locally-hosted LLM (Ollama) into Flask to preserve healthcare data privacy.}
+    \resumeItem{Completed applied labs on Azure AI Foundry: built multi-agent solutions with Semantic Kernel SDK, text classification, and speech-to-text pipelines; applied Responsible AI safeguards against adversarial prompts.}
+\end{itemize}
+
+\resumeSubheading
+  {Web Development Intern}{Aug 2025 -- Present}
+  {Office of Dean Academics, Vel Tech University}{Chennai, India}
+\begin{itemize}
+    \resumeItem{Architected a centralized \textbf{Campus Recruitment Portal} (\href{https://miniapps.veltech.edu.in/c2c}{miniapps.veltech.edu.in/c2c}) on a \textbf{dual-database design (MSSQL and MySQL)}, building a secure synchronization layer to reconcile academic records across both systems without data loss.}
+    \resumeItem{Developed an automated eligibility engine and a custom Applicant Tracking System (ATS) using rule-based SQL queries and PDF resume parsing, eliminating manual shortlisting for 1000+ student records.}
+    \resumeItem{Engineered a role-based Research Studies Management System (\href{https://miniapps.veltech.edu.in/research_studies}{miniapps.veltech.edu.in/research\_studies}) with a dynamic timeline engine computing stage deadlines, including fractional-month logic, for PhD scholar progress tracking.}
+\end{itemize}
+
+\newpage
+
+\section*{Key Projects}
+
+\small\textbf{EdgeModelScheduler v4.0 -- Deterministic Edge AI Co-Scheduler} \hfill \small\href{https://github.com/VIKASSAMVEL/edge-model-scheduler}{github.com/VIKASSAMVEL/edge-model-scheduler}
+
+\small\textit{Tech Stack: C++17, CUDA IPC, Linux /dev/shm, Lock-Free Rings, CMake} \hfill \small\href{https://vikassamvel.github.io/edge-model-scheduler/}{vikassamvel.github.io/edge-model-scheduler}
+\begin{itemize}
+    \resumeItem{Architected a pure C++17 deterministic edge AI co-scheduler for constrained edge SoCs (NVIDIA Jetson / automotive platforms), operating with an ultra-lean 3.125 MB VmRSS footprint ($\sim$\textbf{396x leaner} than Triton Inference Server's 1,240 MB idle footprint).}
+    \resumeItem{Engineered a CUDA IPC Zero-Copy TypeAdapter transferring raw LiDAR point clouds and camera frames across process boundaries via 64-byte virtual handles over \texttt{/dev/shm} at \textbf{12.23 GB/s throughput ($<$15 $\mu$s mapping latency)}, eliminating ROS 2 DDS serialization overhead.}
+    \resumeItem{Implemented sub-15ns lock-free Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (\texttt{alignas(64)}), eliminating CPU lock contention and cache-line bouncing.}
+    \resumeItem{Built slack-aware pre-execution shedding that continuously evaluates remaining frame deadlines before GPU submission, bounding P99 worst-case tail latency to \textbf{29.02 ms} (vs. 73 ms+ in unmanaged FIFO) with \textbf{0.00\% deadline miss rate} under simulated 45 ms network jitter stalls.}
+    \resumeItem{Integrated an ISO 26262 ASIL-D telemetry flight recorder (60,000 frames @ 1 kHz ring buffer) auto-dumping rolling SHA-256 cryptographically verified \texttt{.emsbag} binaries on safety trips, paired with an 82$^\circ$C thermal DVFS hysteresis governor.}
+\end{itemize}
+
+\vspace{1.5pt}
+\small\textbf{Autonomous Agricultural Robot -- Edge AI \& Real-Time Control (Ashok Leyland)} \hfill \textbf{Patent Filed (2024)}
+
+\small\textit{Tech Stack: C++, Python, YOLOv8, RKNN, Rock 5 ITX, Teensy 4.1, LiDAR, Optical Encoders}
+\begin{itemize}
+    \resumeItem{Deployed an INT8 quantized YOLOv8 model on a Rock 5 ITX for weed classification, interfaced with C++ embedded control logic on a Teensy 4.1 micro-controller handling high-frequency LiDAR and encoder sensor streams for real-time actuation. \textbf{Patent filed.}}
+    \resumeItem{Engineered deterministic pulse-width modulation motor actuation routines, achieving sub-millisecond control loop response times.}
+\end{itemize}
+
+\vspace{1.5pt}
+\small\textbf{Construction Worker Safety System -- Edge AI \& Vision (Ashok Leyland)} \hfill \textbf{Patent Filed (2025)}
+
+\small\textit{Tech Stack: Python, YOLOv12 (Ultralytics), OpenCV, PyQt5, Raspberry Pi, GPIO, EdgeTAM}
+\begin{itemize}
+    \resumeItem{Built a real-time computer vision system detecting six safety-critical classes (workers, harnesses, helmets, ladders, scaffolding, MEWPs) to monitor work-at-height compliance on construction sites.}
+    \resumeItem{Implemented spatial safety logic: \textbf{IOU-based harness-compliance checks} and point-in-polygon zone-violation detection with hysteresis debouncing; wired GPIO relay on Raspberry Pi to trigger sirens or cut equipment power upon hazardous violations. \textbf{Patent filed.}}
+\end{itemize}
+
+\vspace{1.5pt}
+\small\textbf{E2EE Chat System -- Secure Real-Time Messaging Platform} \hfill \small\href{https://github.com/VIKASSAMVEL/E2EE}{github.com/VIKASSAMVEL/E2EE}
+
+\small\textit{Tech Stack: Java 21, Spring Boot, Spring Security, Spring Data MongoDB, STOMP/WebSocket, React, Docker}
+\begin{itemize}
+    \resumeItem{Architected a layered Spring Boot backend with stateless JWT authentication, custom \texttt{AuthTokenFilter}, and method-level security; engineered real-time delivery over STOMP messaging with a custom \texttt{ChannelInterceptor} for principal binding.}
+    \resumeItem{Implemented \textbf{hybrid envelope encryption} on the client (RSA-OAEP 2048-bit key wrapping with ephemeral AES-GCM 256-bit session key per message) via WebCrypto API; server persists only ciphertext, guaranteeing zero-knowledge security. Containerized with Docker.}
+\end{itemize}
+
+\vspace{1.5pt}
+\small\textbf{Krishi Jarvis -- Multilingual Farm Advisory \& Plant Disease Detection} \hfill \small\href{https://github.com/VIKASSAMVEL/farmer-agent}{github.com/VIKASSAMVEL/farmer-agent}
+
+\small\textit{Tech Stack: Flutter, Flask, YOLOv8 (ONNX Runtime), Local Ollama LLM, Google Translate API}
+\begin{itemize}
+    \resumeItem{Trained and deployed a YOLOv8 model (exported to ONNX) to classify 29 leaf-disease classes from camera images; built local Ollama LLM RAG layer grounded in verified agronomy data, offering multi-lingual voice/text interaction in Hindi, Tamil, and English.}
+\end{itemize}
+
+\section*{Achievements}
+\begin{itemize}
+    \resumeItem{\textbf{Winner} -- Agentic AI Hackathon 2025, SIMATS (world's first prompt-exclusive hackathon).}
+    \resumeItem{\textbf{National Rank 37 of 150} -- TechXcelerate Hackathon, BITS Goa.}
+    \resumeItem{\textbf{Top 5\%} -- ODOO x MSU FootPrints'25 Hackathon.}
+    \resumeItem{\textbf{First Prize} -- Technical Paper Presentation Competition, ISTE Tamil Nadu (PSR College).}
+    \resumeItem{\textbf{Qualifier} -- Smart India Hackathon (SIH) Internal Institutional Rounds, 2024 and 2025.}
+\end{itemize}
+
+\section*{Patents and Publications}
+\begin{itemize}
+    \resumeItem{\textbf{Patent Filed:} Automatic Railway Gate System (Indian Patent Office, 2023).}
+    \resumeItem{\textbf{Patent Filed:} Autonomous Agricultural Robot, Ashok Leyland (Indian Patent Office, 2024).}
+    \resumeItem{\textbf{Patent Filed:} Real-Time Construction Worker Fall Prevention and Safety Compliance Monitoring System, Ashok Leyland (Indian Patent Office, 2025).}
+    \resumeItem{\textbf{Research (Under Review):} Real-Time Autonomous Navigation for Agricultural Robots.}
+    \resumeItem{\textbf{Research (Under Review):} Indian Sign Language Recognition using Deep Learning.}
+\end{itemize}
+
+\end{document}
