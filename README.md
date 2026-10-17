@@ -33,7 +33,8 @@
 </p>
 
 <p align="center">
-  <a href="EdgeModelScheduler_Report_Final_v4.docx"><strong>📄 Enterprise Technical Report (v4.0 .docx)</strong></a> •
+  <a href="https://vikassamvel.github.io/edge-model-scheduler/EdgeModelScheduler_Report_Final_v4.pdf"><strong>📄 Enterprise Technical Report (PDF)</strong></a> •
+  <a href="EdgeModelScheduler_Report_Final_v4.docx"><strong>(DOCX)</strong></a> •
   <a href="https://vikassamvel.github.io/edge-model-scheduler/"><strong>🏎️ Live Bento Cockpit</strong></a> •
   <a href="outreach/EXECUTIVE_OUTREACH_DOSSIER.md"><strong>💼 Executive Dossier</strong></a>
 </p>
