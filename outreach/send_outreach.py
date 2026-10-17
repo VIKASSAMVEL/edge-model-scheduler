@@ -163,7 +163,7 @@ Looking forward to the possibility of a conversation.
 Warm regards,
 Vikas Samvel
 Systems Software & GPU Runtime Engineer
-Email: vikassamvel123@gmail.com | Phone: +91 99408 81234
+Email: vikassamvel123@gmail.com | Phone: +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
 GitHub: https://github.com/VIKASSAMVEL
 """
@@ -241,7 +241,7 @@ GitHub: https://github.com/VIKASSAMVEL
     <p style="margin: 0 0 2px 0; font-weight: 600;">Vikas Samvel</p>
     <p style="margin: 0 0 6px 0; color: #64748b;">Systems Software &amp; GPU Runtime Engineer</p>
     <p style="margin: 0; font-size: 13px;">
-      Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 99408 81234<br>
+      Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikassamvel/">linkedin.com/in/vikassamvel</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a>
     </p>
   </div>
@@ -302,7 +302,7 @@ Looking forward to the possibility of a conversation.
 Warm regards,
 Vikas Samvel
 Systems Software & Low-Latency Dataplane Engineer
-Email: vikassamvel123@gmail.com | Phone: +91 99408 81234
+Email: vikassamvel123@gmail.com | Phone: +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
 GitHub: https://github.com/VIKASSAMVEL
 """
@@ -381,7 +381,7 @@ GitHub: https://github.com/VIKASSAMVEL
     <p style="margin: 0 0 2px 0; font-weight: 600;">Vikas Samvel</p>
     <p style="margin: 0 0 6px 0; color: #64748b;">Systems Software &amp; Low-Latency Dataplane Engineer</p>
     <p style="margin: 0; font-size: 13px;">
-      Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 99408 81234<br>
+      Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikassamvel/">linkedin.com/in/vikassamvel</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a>
     </p>
   </div>
