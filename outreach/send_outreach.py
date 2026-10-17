@@ -619,6 +619,17 @@ def main():
             send_single_mail(server, sender_email, sender_email, test_subj, plain, html)
         print(f"✅ Test email successfully sent to {sender_email} with resume attached (S_Vikas_Resume.pdf)! Check your inbox.")
 
+    elif mode == "--to":
+        target_addr = sys.argv[2] if len(sys.argv) > 2 else "vtu24383@veltech.edu.in"
+        print(f"Sending sample verification email to: {target_addr}...")
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+            server.login(sender_email, app_password)
+            subj, plain, html = generate_email_content(RECIPIENTS[0])
+            sample_subj = f"[SAMPLE VERIFICATION] {subj}"
+            send_single_mail(server, sender_email, target_addr, sample_subj, plain, html)
+        print(f"✅ Sample email successfully sent to {target_addr} with resume attached (S_Vikas_Resume.pdf)!")
+
     elif mode == "--send":
         print("⚠️  CONFIRMED SEND MODE: Dispatching individually to each recipient...")
         context = ssl.create_default_context()
@@ -635,7 +646,7 @@ def main():
         print("\n🎉 All 9 individualized executive emails dispatched successfully!")
 
     else:
-        print(f"Unknown mode: {mode}. Use --dry-run, --test-me, or --send.")
+        print(f"Unknown mode: {mode}. Use --dry-run, --test-me, --to <email>, or --send.")
 
 if __name__ == "__main__":
     main()
