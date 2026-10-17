@@ -118,7 +118,7 @@ def generate_email_content(target):
 
 I'm reaching out directly because I follow your work on autonomous machines at NVIDIA and wanted to share a low-latency systems project I've been building.
 
-I'm Vikas Samvel, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.
+I'm Vikas S, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.
 
 Over the last few months, I built an open-source deterministic edge AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I wanted to understand why current edge inference pipelines struggle with latency consistency on Jetson and DRIVE platforms:
 
@@ -143,7 +143,7 @@ I'm writing because I'm graduating soon and want to work on systems software and
 If someone else on the engineering or recruiting team is better to speak with, I'd appreciate you passing this along.
 
 Thanks for your time,
-Vikas Samvel
+Vikas S
 Final-Year B.Tech CSE Student, Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
@@ -171,7 +171,7 @@ GitHub: https://github.com/VIKASSAMVEL
 
   <p>I'm reaching out directly because I follow your work on autonomous machines at NVIDIA and wanted to share a low-latency systems project I've been building.</p>
 
-  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.</p>
+  <p>I'm <strong>Vikas S</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my coursework and peers focus on standard web stacks, but I've spent the past two years focused on systems programming: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and GPU runtimes.</p>
 
   <p>Over the last few months, I built an open-source deterministic edge AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I wanted to understand why current edge inference pipelines struggle with latency consistency on Jetson and DRIVE platforms:</p>
 
@@ -207,7 +207,7 @@ GitHub: https://github.com/VIKASSAMVEL
   <p>Thanks for your time,</p>
 
   <div class="footer">
-    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas Samvel</p>
+    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas S</p>
     <p style="margin: 0 0 4px 0; color: #475569;">Final-Year B.Tech CSE Student, Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
@@ -226,7 +226,7 @@ GitHub: https://github.com/VIKASSAMVEL
 
 I'm reaching out directly because I follow Palo Alto Networks' dataplane engineering and wanted to share a low-latency systems project I've been building.
 
-I'm Vikas Samvel, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.
+I'm Vikas S, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.
 
 Over the last few months, I built an open-source deterministic AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I wanted to study how hardware firewalls can run inline deep learning without breaking line-rate guarantees:
 
@@ -252,7 +252,7 @@ I'm writing because I'm graduating soon and want to work on low-latency systems 
 If there is an engineering lead or hiring manager on your team who would be the right person to speak with, I'd appreciate you passing this along.
 
 Thanks for your time,
-Vikas Samvel
+Vikas S
 Final-Year B.Tech CSE Student, Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikassamvel/
@@ -280,7 +280,7 @@ GitHub: https://github.com/VIKASSAMVEL
 
   <p>I'm reaching out directly because I follow Palo Alto Networks' dataplane engineering and wanted to share a low-latency systems project I've been building.</p>
 
-  <p>I'm <strong>Vikas Samvel</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.</p>
+  <p>I'm <strong>Vikas S</strong>, a final-year B.Tech CSE student at Vel Tech University in Chennai. Most of my peers focus on web applications, but I've spent the past two years focused on low-level systems: bare-metal C++17, Linux kernel memory management, lock-free concurrency, and high-throughput dataplanes.</p>
 
   <p>Over the last few months, I built an open-source deterministic AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I wanted to study how hardware firewalls can run inline deep learning without breaking line-rate guarantees:</p>
 
@@ -317,7 +317,7 @@ GitHub: https://github.com/VIKASSAMVEL
   <p>Thanks for your time,</p>
 
   <div class="footer">
-    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas Samvel</p>
+    <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">Vikas S</p>
     <p style="margin: 0 0 4px 0; color: #475569;">Final-Year B.Tech CSE Student, Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
@@ -333,7 +333,7 @@ GitHub: https://github.com/VIKASSAMVEL
 
 def send_single_mail(server, sender_email, recipient_email, subject, plain_text, html_body):
     msg = MIMEMultipart('alternative')
-    msg['From'] = f"Vikas Samvel <{sender_email}>"
+    msg['From'] = f"Vikas S <{sender_email}>"
     msg['To'] = recipient_email
     msg['Subject'] = subject
 
