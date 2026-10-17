@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-EdgeModelScheduler Executive Outreach Dispatcher
+EdgeModelScheduler Executive Outreach Dispatcher - Option D (Hybrid Executive Dossier)
 Sends individualized, deeply technical, beautifully formatted cold emails to leadership at NVIDIA and Palo Alto Networks.
 Uses MIMEMultipart('mixed') with an inner MIMEMultipart('alternative') for clean plain-text + mobile-responsive HTML,
-and attaches the verified resume PDF (S_Vikas_Resume.pdf).
+with high-contrast competitive architecture tables, deep C++17 systems teardowns, and the verified resume PDF (S_Vikas_Resume.pdf) attached.
 """
 
 import sys
@@ -17,7 +17,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
 # Path to verified resume PDF
-RESUME_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resume_tcs_prime_java_ai_latex.pdf")
+RESUME_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "S_Vikas_Resume.pdf")
+if not os.path.exists(RESUME_PATH):
+    RESUME_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resume_tcs_prime_java_ai_latex.pdf")
 
 # Ensure utf-8 encoding on Windows console
 if sys.platform == "win32":
@@ -119,17 +121,25 @@ def generate_email_content(target):
     # Common HTML style block for pristine mobile and desktop rendering
     css_styles = """
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.62; color: #1e293b; background-color: #ffffff; margin: 0; padding: 0; }
-  .container { max-width: 620px; margin: 0 auto; padding: 20px 16px; }
+  .container { max-width: 650px; margin: 0 auto; padding: 22px 16px; }
   p { margin: 0 0 14px 0; }
   ol, ul { margin: 0 0 14px 0; padding-left: 20px; }
   li { margin-bottom: 8px; }
-  .links-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin: 18px 0; }
+  .section-title { font-weight: 700; color: #0f172a; margin: 22px 0 10px 0; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .table-box { overflow-x: auto; margin: 18px 0; border: 1px solid #cbd5e1; border-radius: 6px; }
+  table.comp-table { width: 100%; border-collapse: collapse; font-size: 13.5px; text-align: left; }
+  table.comp-table th { background: #f8fafc; color: #0f172a; font-weight: 600; padding: 10px 12px; border-bottom: 2px solid #cbd5e1; }
+  table.comp-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: #334155; }
+  table.comp-table tr:nth-child(even) { background: #fdfdfd; }
+  .metric-highlight { color: #047857; font-weight: 600; }
+  .metric-standard { color: #64748b; }
+  .links-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin: 20px 0; }
   a { color: #2563eb; text-decoration: underline; font-weight: 500; }
-  .footer { border-top: 1px solid #e2e8f0; padding-top: 14px; margin-top: 20px; color: #475569; font-size: 14px; }
+  .footer { border-top: 1px solid #e2e8f0; padding-top: 14px; margin-top: 22px; color: #475569; font-size: 14px; }
 """
 
     if category == "nvidia_robotics":
-        subject = "Final-year student (Vel Tech) — built low-latency C++17 runtime vs. Triton & ROS bottlenecks on Jetson"
+        subject = "EdgeModelScheduler v4.0: Deterministic C++17 runtime bypassing Triton & ROS 2 DDS on Jetson"
         
         plain_text = f"""Hi {first_name},
 
@@ -139,16 +149,23 @@ I'm S. Vikas, a final-year B.Tech CSE student at Vel Tech University in Chennai 
 
 Experiencing firsthand how middleware serialization and memory overhead choke real-time perception on edge hardware led me to build an open-source deterministic edge AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I engineered it specifically to solve three critical bottlenecks that occur when deploying multi-model robotics pipelines on Jetson SoCs:
 
-1. Triton Inference Server Memory Footprint: Triton is the gold standard for datacenter GPU clusters, but on unified-memory edge SoCs like Jetson Orin Nano / AGX Orin, Triton carries a ~1,240 MB idle footprint. On an 8GB Orin Nano, this consumes over 15% of total system RAM before processing a single frame, starving localized obstacle voxel grids.
-2. ROS 2 & Isaac ROS Middleware Overhead: Passing 12MB LiDAR pointclouds and 4K camera frames through ROS 2 DDS middleware forces four sequential serialization and memory copies between host and device memory. This burns 20–35 ms of PCIe/memory bus headroom before inference even begins. Under sensor burst jitter, standard FIFO queues suffer severe tail latency blowout (P99 > 73 ms) with a 35% deadline failure rate.
-3. Cross-Model Hardware Contention: TensorRT compiles exceptional individual execution graphs, but provides no dynamic arbiter when concurrent perception models (e.g. YOLOv8 detection, depth estimation, and BEV segmentation) compete simultaneously for GPU SMs and dual Deep Learning Accelerators (DLA) under 82°C thermal downclocking.
+ARCHITECTURAL BENCHMARK: TRITON & ROS 2 DDS VS. EDGEMODELSCHEDULER v4.0
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Dimension                | Standard Edge Stack      | EdgeModelScheduler v4.0   | Jetson Robotics Advantage                    |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Resident RAM Footprint   | ~1,240 MB (Triton Idle)  | 3.125 MB VmRSS            | 396x leaner; leaves LPDDR5 for voxel grids   |
+| Sensor IPC Latency       | 20–35 ms (4x DDS copies) | <15 µs (12.23 GB/s)       | Zero-copy CUDA IPC over /dev/shm             |
+| Bursty Jitter Defense    | P99 > 73 ms (35% drops)  | P99 29.02 ms (0.00% drops)| Slack-aware pre-execution shedding           |
+| Thermal Stress (82°C)    | Severe throttle dropouts | Closed-loop INT8 governor | Halves bus bandwidth; cools die in real-time |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
 
-To solve this, I built a pure C++17 runtime with zero heap allocations on the critical execution path:
-- 3.125 MB Resident Memory Footprint: Operates with an idle footprint ~396x leaner than Triton (3.1 MB vs. 1,240 MB), leaving virtually all physical LPDDR5 memory available for onboard perception and mapping.
-- CUDA IPC Zero-Copy TypeAdapter: Passes raw PointCloud2 LiDAR and camera frames across process boundaries via 64-byte virtual memory handles over /dev/shm, bypassing ROS 2 DDS serialization at 12.23 GB/s throughput (<15 µs mapping latency).
-- Lock-Free SPSC Arbiter: Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating lock contention and CPU cache-line bouncing.
-- Heterogeneous GPU/DLA Co-Scheduler: Dynamically balances execution between Ampere/Blackwell GPU SMs and dual DLAs. Under simulated 45 ms network stalls, it predictively sheds stale intermediate frames and maintained a 0.00% deadline miss rate.
-- Thermal DVFS Hysteresis Governor: Automatically down-quantizes secondary perception models from FP16 to INT8 when reaching 82°C, cutting memory bus draw by 50% and cooling the die while locking critical obstacle avoidance in full precision.
+CORE LOW-LEVEL SYSTEMS INNOVATIONS:
+1. 3.125 MB Resident Memory Core: Operates ~396x leaner than Triton (3.1 MB vs. 1,240 MB), completely avoiding the memory starvation that occurs when running SLAM, local costmaps, and voxel grids concurrently on an 8GB Jetson Orin Nano.
+2. CUDA IPC Zero-Copy TypeAdapter (12.23 GB/s): Transfers raw PointCloud2 LiDAR and 4K camera frames across process boundaries via 64-byte virtual memory handles over /dev/shm in <15 microseconds, bypassing ROS 2 DDS serialization entirely.
+3. Sub-15ns Lock-Free SPSC Arbiter: Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating CPU mutex lock contention and cache-line bouncing across ARM Cortex-A78 cores.
+4. Slack-Aware Pre-Execution Shedding: Continuously evaluates frame deadline slack [T_slack = T_deadline - (T_now + WCET)] before submitting tasks to CUDA streams. Under simulated 45 ms sensor bursts, it predictively sheds stale intermediate frames, saving 100% of GPU compute for active obstacles and locking a 0.00% deadline miss rate.
+5. Dynamic Thermal DVFS Hysteresis Governor: Seamlessly down-quantizes secondary perception models from FP16 to INT8 upon reaching 82°C, cutting memory bus draw by 50% while locking critical obstacle avoidance in full precision.
+6. ISO 26262 ASIL-D Telemetry Flight Recorder: Pre-allocated circular telemetry buffer (60,000 frames @ 1 kHz) that auto-dumps rolling SHA-256 cryptographically verified .emsbag binaries upon emergency stops.
 
 I've attached my full resume (S_Vikas_Resume.pdf) and documented the complete architecture, cache-line profiling, and reproducible benchmarks in our technical dossier:
 - Attached Resume: S_Vikas_Resume.pdf (Vel Tech B.Tech CSE 8.67 CGPA, 3 Patents Filed, Ashok Leyland R&D)
@@ -163,8 +180,8 @@ Thank you for your time and leadership in this space.
 
 Thanks for your time,
 S. Vikas
-B.Tech Computer Science & Engineering (CGPA: 8.67 / 10)
-Vel Tech University, Chennai
+Systems Software & Edge AI Engineer
+B.Tech Computer Science & Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikas-s070106
 GitHub: https://github.com/VIKASSAMVEL
@@ -188,20 +205,54 @@ Portfolio: https://vikas-world.vercel.app
 
   <p>Experiencing firsthand how middleware serialization and memory overhead choke real-time perception on edge hardware led me to build an open-source deterministic edge AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I engineered it specifically to solve three critical bottlenecks that occur when deploying multi-model robotics pipelines on Jetson SoCs:</p>
 
-  <ol>
-    <li><strong>Triton Inference Server Memory Footprint:</strong> Triton is the gold standard for datacenter GPU clusters, but on unified-memory edge SoCs like Jetson Orin Nano / AGX Orin, Triton carries a ~1,240 MB idle footprint. On an 8GB Orin Nano, this consumes over 15% of total system RAM before processing a single frame, starving localized obstacle voxel grids.</li>
-    <li><strong>ROS 2 &amp; Isaac ROS Middleware Overhead:</strong> Passing 12MB LiDAR pointclouds and 4K camera frames through ROS 2 DDS middleware forces four sequential serialization and memory copies between host and device memory. This burns 20&ndash;35 ms of PCIe/memory bus headroom before inference even begins. Under sensor burst jitter, standard FIFO queues suffer severe tail latency blowout (P99 &gt; 73 ms) with a 35% deadline failure rate.</li>
-    <li><strong>Cross-Model Hardware Contention:</strong> TensorRT compiles exceptional individual execution graphs, but provides no dynamic arbiter when concurrent perception models (e.g. YOLOv8 detection, depth estimation, and BEV segmentation) compete simultaneously for GPU SMs and dual Deep Learning Accelerators (DLA) under 82&deg;C thermal downclocking.</li>
-  </ol>
+  <div class="section-title">Architectural Benchmark: Incumbent Stack vs. EdgeModelScheduler v4.0</div>
+  <div class="table-box">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Standard Stack (Triton / ROS DDS)</th>
+          <th>EdgeModelScheduler v4.0</th>
+          <th>Jetson Robotics Advantage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Resident RAM</strong></td>
+          <td class="metric-standard">~1,240 MB (Triton Idle)</td>
+          <td class="metric-highlight">3.125 MB VmRSS</td>
+          <td><strong>396x leaner;</strong> leaves physical LPDDR5 RAM for obstacle voxel grids &amp; SLAM</td>
+        </tr>
+        <tr>
+          <td><strong>Sensor Ingestion</strong></td>
+          <td class="metric-standard">20&ndash;35 ms (4x DDS serialization)</td>
+          <td class="metric-highlight">&lt;15 &mu;s (12.23 GB/s)</td>
+          <td>Zero-copy CUDA IPC over <code>/dev/shm</code>; bypasses ROS DDS CPU memory copies</td>
+        </tr>
+        <tr>
+          <td><strong>Jitter Stall Defense</strong></td>
+          <td class="metric-standard">P99 &gt; 73 ms (35% deadline drops)</td>
+          <td class="metric-highlight">P99 29.02 ms (0.00% drops)</td>
+          <td>Slack-aware pre-execution shedding drops expired frames before GPU submission</td>
+        </tr>
+        <tr>
+          <td><strong>Thermal Stress (82&deg;C)</strong></td>
+          <td class="metric-standard">Severe clock throttle dropouts</td>
+          <td class="metric-highlight">Closed-Loop INT8 Governor</td>
+          <td>Halves memory bus bandwidth &amp; cools die while locking obstacle detection in FP16</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <p>To solve this, I built a pure C++17 runtime with zero heap allocations on the critical execution path:</p>
-
+  <div class="section-title">Core Low-Level Systems Innovations:</div>
   <ul>
-    <li><strong>3.125 MB Resident Memory Footprint:</strong> Operates with an idle footprint ~396x leaner than Triton (3.1 MB vs. 1,240 MB), leaving virtually all physical LPDDR5 memory available for onboard perception and mapping.</li>
-    <li><strong>CUDA IPC Zero-Copy TypeAdapter:</strong> Passes raw PointCloud2 LiDAR and camera frames across process boundaries via 64-byte virtual memory handles over <code>/dev/shm</code>, bypassing ROS 2 DDS serialization at <strong>12.23 GB/s throughput</strong> (&lt;15 &mu;s mapping latency).</li>
-    <li><strong>Lock-Free SPSC Arbiter:</strong> Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating lock contention and CPU cache-line bouncing.</li>
-    <li><strong>Heterogeneous GPU/DLA Co-Scheduler:</strong> Dynamically balances execution between Ampere/Blackwell GPU SMs and dual DLAs. Under simulated 45 ms network stalls, it predictively sheds stale intermediate frames and maintained a <strong>0.00% deadline miss rate</strong>.</li>
-    <li><strong>Thermal DVFS Hysteresis Governor:</strong> Automatically down-quantizes secondary perception models from FP16 to INT8 when reaching 82&deg;C, cutting memory bus draw by 50% and cooling the die while locking critical obstacle avoidance in full precision.</li>
+    <li><strong>3.125 MB Resident Memory Core:</strong> Operates ~396x leaner than Triton (3.1 MB vs. 1,240 MB), completely avoiding memory exhaustion on unified-memory Jetson Orin Nano / AGX Orin SoCs.</li>
+    <li><strong>CUDA IPC Zero-Copy TypeAdapter (12.23 GB/s):</strong> Passes raw PointCloud2 LiDAR and 4K camera frames across process boundaries via 64-byte virtual memory handles over <code>/dev/shm</code> in &lt;15 microseconds.</li>
+    <li><strong>Sub-15ns Lock-Free SPSC Arbiter:</strong> Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating CPU lock contention and cache-line bouncing.</li>
+    <li><strong>Slack-Aware Pre-Execution Shedding:</strong> Continuously evaluates frame deadline slack before GPU stream submission; under simulated 45 ms network stalls, it predictively sheds stale intermediate frames and maintained a <strong>0.00% deadline miss rate</strong>.</li>
+    <li><strong>Dynamic Thermal DVFS Hysteresis Governor:</strong> Seamlessly down-quantizes secondary perception models from FP16 to INT8 upon reaching 82&deg;C, cutting memory bus draw by 50% and cooling the die in real-time.</li>
+    <li><strong>ISO 26262 ASIL-D Telemetry Flight Recorder:</strong> Pre-allocated circular telemetry buffer (60,000 frames @ 1 kHz) auto-dumping rolling SHA-256 cryptographically verified <code>.emsbag</code> binaries upon safety island trips.</li>
   </ul>
 
   <div class="links-box">
@@ -221,7 +272,7 @@ Portfolio: https://vikas-world.vercel.app
 
   <div class="footer">
     <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">S. Vikas</p>
-    <p style="margin: 0 0 4px 0; color: #475569;">B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Systems Software &amp; Edge AI Engineer<br>B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikas-s070106">linkedin.com/in/vikas-s070106</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a> | Portfolio: <a href="https://vikas-world.vercel.app">vikas-world.vercel.app</a>
@@ -233,7 +284,7 @@ Portfolio: https://vikas-world.vercel.app
 """
 
     elif category == "nvidia_automotive":
-        subject = "Final-year student (Vel Tech) — built deterministic C++17 runtime for DRIVE Thor / Orin ADAS deadlines"
+        subject = "EdgeModelScheduler v4.0: Deterministic C++17 co-scheduler for sub-35ms ADAS deadlines on DRIVE Thor / Orin"
         
         plain_text = f"""Hi {first_name},
 
@@ -243,16 +294,24 @@ I'm S. Vikas, a final-year B.Tech CSE student at Vel Tech University in Chennai 
 
 Experiencing firsthand how physical vehicle safety depends on deterministic latency guarantees led me to build an open-source deterministic edge AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I engineered it specifically to address automotive runtime challenges on platforms like DRIVE Orin and DRIVE Thor:
 
-1. Hard Real-Time Deadlines vs. FIFO Bufferbloat: Autonomous vehicle perception requires hard physical deadlines (sub-35ms frame-to-braking budget). Under bursty camera or LiDAR jitter, standard FIFO queues in generic runtimes queue frames indefinitely, resulting in severe tail latency spikes (P99 > 73 ms) and a 35% critical deadline failure rate.
-2. Lack of ASIL-D Black Box Audit Trails: Generic inference servers like Triton do not provide on-chip deterministic flight recorders. When an emergency stop or safety watchdog trips, there is no zero-overhead mechanism to reconstruct what the neural perception stack saw in the exact preceding milliseconds.
-3. Thermal DVFS Shock in In-Cabin/Under-Hood Silicon: When automotive SoCs experience thermal stress (reaching 82°C), hardware throttling drops clock frequencies, causing sudden multi-frame dropouts in safety-critical object detection.
+ARCHITECTURAL BENCHMARK: GENERIC AUTOMOTIVE FIFO VS. EDGEMODELSCHEDULER v4.0
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Dimension                | Standard Automotive FIFO | EdgeModelScheduler v4.0   | DRIVE Thor / Orin ADAS Advantage             |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Real-Time Deadline Slack | P99 > 73 ms (35% fails)  | P99 29.02 ms (0.00% drops)| Sub-35ms frame-to-braking budget guaranteed  |
+| Emergency Hazard Preempt | FIFO delay (>12 ms)      | 1.32 µs arbitration       | Sub-microsecond priority collision avoidance |
+| Forensic Auditability    | No on-chip black box log | ISO 26262 ASIL-D Recorder | 60,000 frames @ 1 kHz rolling SHA-256 binary |
+| Thermal Shock (82°C)     | Throttling frame drops   | Closed-loop INT8 Governor | Preserves die cooling without losing safety  |
+| Memory Overhead          | Hundreds of MBs          | 3.125 MB VmRSS            | Maximum headroom for surround-view cameras   |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
 
-To solve this, I built a pure C++17 runtime with zero heap allocations on the critical path:
-- Slack-Aware Pre-Execution Shedding: Continuously calculates remaining deadline slack before submitting tasks to CUDA streams. If a frame has already expired due to sensor bus stalls, it sheds it immediately, saving 100% of GPU compute for current frames and maintaining a 0.00% deadline miss rate under 45ms network stalls.
-- Sub-Microsecond Emergency Braking Hazard Arbitration: Prioritizes critical collision avoidance paths with 1.32 microsecond arbitration latency, ensuring that emergency braking paths are never starved by background trajectory or cabin AI tasks.
-- ISO 26262 ASIL-D Telemetry Flight Recorder: Pre-allocated circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified .emsbag binaries upon any safety island trip for complete forensic traceability.
-- Closed-Loop Thermal Precision Governor: Seamlessly degrades secondary perception models from FP16 to INT8 at 82°C to reduce memory bus bandwidth and cool the die, while locking collision avoidance in full precision.
-- Ultra-Lean 3.125 MB Resident RAM Footprint: Leaves maximum compute and memory headroom for surround-view perception models.
+CORE LOW-LEVEL SYSTEMS INNOVATIONS:
+1. Slack-Aware Pre-Execution Shedding: Continuously calculates remaining deadline slack before submitting tasks to CUDA streams. If a frame has already expired due to sensor bus stalls, it sheds it immediately, saving 100% of GPU compute for current frames and maintaining a 0.00% deadline miss rate under 45ms network stalls.
+2. Sub-Microsecond Emergency Braking Hazard Arbitration: Prioritizes critical collision avoidance paths with 1.32 microsecond arbitration latency, ensuring that emergency braking paths are never starved by background trajectory or cabin AI tasks.
+3. Sub-15ns Lock-Free Dataplane Ring: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), preventing CPU lock contention and cache-line bouncing across multi-core processors.
+4. Direct-Memory Transport (12.23 GB/s): Maps camera and LiDAR buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating CPU/PCIe serialization.
+5. ISO 26262 ASIL-D Telemetry Flight Recorder: Pre-allocated circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified .emsbag binaries upon any safety island trip for complete forensic traceability.
+6. Closed-Loop Thermal Precision Governor: Seamlessly degrades secondary perception models from FP16 to INT8 at 82°C to reduce memory bus bandwidth and cool the die, while locking collision avoidance in full precision.
 
 I've attached my full resume (S_Vikas_Resume.pdf) and documented the complete architecture, cache-line profiling, and benchmarks in our technical dossier:
 - Attached Resume: S_Vikas_Resume.pdf (Vel Tech B.Tech CSE 8.67 CGPA, 3 Patents Filed, Ashok Leyland R&D)
@@ -267,8 +326,8 @@ Thank you for your time and for driving the future of autonomous vehicles.
 
 Thanks for your time,
 S. Vikas
-B.Tech Computer Science & Engineering (CGPA: 8.67 / 10)
-Vel Tech University, Chennai
+Systems Software & Edge AI Engineer
+B.Tech Computer Science & Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikas-s070106
 GitHub: https://github.com/VIKASSAMVEL
@@ -292,20 +351,60 @@ Portfolio: https://vikas-world.vercel.app
 
   <p>Experiencing firsthand how physical vehicle safety depends on deterministic latency guarantees led me to build an open-source deterministic edge AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I engineered it specifically to address automotive runtime challenges on platforms like DRIVE Orin and DRIVE Thor:</p>
 
-  <ol>
-    <li><strong>Hard Real-Time Deadlines vs. FIFO Bufferbloat:</strong> Autonomous vehicle perception requires hard physical deadlines (sub-35ms frame-to-braking budget). Under bursty camera or LiDAR jitter, standard FIFO queues in generic runtimes queue frames indefinitely, resulting in severe tail latency spikes (P99 &gt; 73 ms) and a 35% critical deadline failure rate.</li>
-    <li><strong>Lack of ASIL-D Black Box Audit Trails:</strong> Generic inference servers like Triton do not provide on-chip deterministic flight recorders. When an emergency stop or safety watchdog trips, there is no zero-overhead mechanism to reconstruct what the neural perception stack saw in the exact preceding milliseconds.</li>
-    <li><strong>Thermal DVFS Shock in Automotive Silicon:</strong> When automotive SoCs experience thermal stress (reaching 82&deg;C), hardware throttling drops clock frequencies, causing sudden multi-frame dropouts in safety-critical object detection.</li>
-  </ol>
+  <div class="section-title">Architectural Benchmark: Generic FIFO vs. EdgeModelScheduler v4.0</div>
+  <div class="table-box">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Standard Automotive FIFO</th>
+          <th>EdgeModelScheduler v4.0</th>
+          <th>DRIVE Thor / Orin ADAS Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Hard Deadline Budget</strong></td>
+          <td class="metric-standard">P99 &gt; 73 ms (35% ASIL-D fails)</td>
+          <td class="metric-highlight">P99 29.02 ms (0.00% drops)</td>
+          <td>Sub-35ms frame-to-braking budget strictly enforced under 45ms sensor jitter</td>
+        </tr>
+        <tr>
+          <td><strong>Hazard Preemption</strong></td>
+          <td class="metric-standard">FIFO queuing delay (&gt;12 ms)</td>
+          <td class="metric-highlight">1.32 &mu;s arbitration latency</td>
+          <td>Sub-microsecond priority preemption for emergency collision avoidance</td>
+        </tr>
+        <tr>
+          <td><strong>Forensic Auditability</strong></td>
+          <td class="metric-standard">No deterministic flight log</td>
+          <td class="metric-highlight">ISO 26262 ASIL-D Recorder</td>
+          <td>Pre-allocated buffer auto-dumping rolling SHA-256 <code>.emsbag</code> binaries on safety trips</td>
+        </tr>
+        <tr>
+          <td><strong>Thermal Shock (82&deg;C)</strong></td>
+          <td class="metric-standard">Clock throttle drops critical frames</td>
+          <td class="metric-highlight">Closed-Loop INT8 Governor</td>
+          <td>Gracefully down-quantizes secondary models, preserving die cooling &amp; safety</td>
+        </tr>
+        <tr>
+          <td><strong>Memory Overhead</strong></td>
+          <td class="metric-standard">Hundreds of MBs</td>
+          <td class="metric-highlight">3.125 MB VmRSS</td>
+          <td>Leaves maximum memory headroom for high-resolution surround-view cameras</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <p>To solve this, I built a pure C++17 runtime with zero heap allocations on the critical path:</p>
-
+  <div class="section-title">Core Low-Level Systems Innovations:</div>
   <ul>
-    <li><strong>Slack-Aware Pre-Execution Shedding:</strong> Continuously calculates remaining deadline slack before submitting tasks to CUDA streams. If a frame has already expired due to sensor bus stalls, it sheds it immediately, saving 100% of GPU compute for current frames and maintaining a <strong>0.00% deadline miss rate</strong> under 45ms network stalls.</li>
-    <li><strong>Sub-Microsecond Emergency Braking Hazard Arbitration:</strong> Prioritizes critical collision avoidance paths with <strong>1.32 microsecond arbitration latency</strong>, ensuring that emergency braking paths are never starved by background trajectory or cabin AI tasks.</li>
-    <li><strong>ISO 26262 ASIL-D Telemetry Flight Recorder:</strong> Pre-allocated circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified <code>.emsbag</code> binaries upon any safety island trip for complete forensic traceability.</li>
+    <li><strong>Slack-Aware Pre-Execution Shedding:</strong> Continuously calculates remaining deadline slack before submitting tasks to CUDA streams; sheds expired frames immediately, maintaining a <strong>0.00% deadline miss rate</strong> under 45ms network stalls.</li>
+    <li><strong>Sub-Microsecond Emergency Braking Hazard Arbitration:</strong> Prioritizes critical collision avoidance paths with <strong>1.32 microsecond arbitration latency</strong>.</li>
+    <li><strong>Sub-15ns Lock-Free Dataplane Ring:</strong> Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating lock contention and CPU cache-line bouncing.</li>
+    <li><strong>Direct-Memory Transport (12.23 GB/s):</strong> Maps sensor buffers directly to AI acceleration memory in &lt;15 microseconds via 64-byte virtual handles over <code>/dev/shm</code>.</li>
+    <li><strong>ISO 26262 ASIL-D Telemetry Flight Recorder:</strong> Pre-allocated circular telemetry buffer (60,000 frames @ 1,000 Hz) that auto-dumps rolling SHA-256 cryptographically verified <code>.emsbag</code> binaries upon safety island trips.</li>
     <li><strong>Closed-Loop Thermal Precision Governor:</strong> Seamlessly degrades secondary perception models from FP16 to INT8 at 82&deg;C to reduce memory bus bandwidth and cool the die, while locking collision avoidance in full precision.</li>
-    <li><strong>Ultra-Lean 3.125 MB Resident RAM Footprint:</strong> Leaves maximum compute and memory headroom for surround-view perception models.</li>
   </ul>
 
   <div class="links-box">
@@ -325,7 +424,7 @@ Portfolio: https://vikas-world.vercel.app
 
   <div class="footer">
     <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">S. Vikas</p>
-    <p style="margin: 0 0 4px 0; color: #475569;">B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Systems Software &amp; Edge AI Engineer<br>B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikas-s070106">linkedin.com/in/vikas-s070106</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a> | Portfolio: <a href="https://vikas-world.vercel.app">vikas-world.vercel.app</a>
@@ -337,7 +436,7 @@ Portfolio: https://vikas-world.vercel.app
 """
 
     elif category == "panw_dataplane":
-        subject = "Final-year student (Vel Tech) — built C++17 deterministic runtime for inline AI on Single-Pass dataplanes"
+        subject = "EdgeModelScheduler v4.0: Sub-15ns lock-free C++17 runtime for wire-speed inline AI on Single-Pass Dataplanes"
         
         plain_text = f"""Hi {first_name},
 
@@ -347,17 +446,24 @@ I'm S. Vikas, a final-year B.Tech CSE student at Vel Tech University in Chennai 
 
 Over the last several months, I built an open-source deterministic AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I engineered it specifically to solve the architectural challenge of running deep learning inline without breaking line-rate guarantees:
 
-1. Microsecond Dataplane Deadlines vs. Millisecond ML Queues: Network dataplanes (DPDK / hardware NIC rings) operate with microsecond-level deterministic deadlines (<100µs budgets). In contrast, deep learning inference engines (TensorRT, ONNX Runtime) are asynchronous, batch-oriented, and queue-dependent. Under traffic bursts or DDoS conditions, ML queues back up, creating multi-millisecond tail latency blowouts (>70 ms) that either exhaust packet buffer rings (causing dropped sessions) or force appliances to bypass deep inspection.
-2. Cache Contention & Mutex Bouncing Across Packet Cores: Standard ML runtimes carry heavy resident footprints (hundreds of MBs) and use coarse mutex locking that creates severe cache-line bouncing across multi-core dataplane processors.
-3. Lack of Tamper-Proof Audit Logging: Threat classification decisions made inline need immutable forensic verification for regulatory compliance without incurring disk I/O latency penalties on the packet path.
+ARCHITECTURAL BENCHMARK: GENERIC ML RUNTIME VS. EDGEMODELSCHEDULER v4.0
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Dimension                | Generic ML on Hardware   | EdgeModelScheduler v4.0   | Single-Pass Dataplane Advantage              |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Dataplane Ingress Parity | Mutex lock contention    | Sub-15ns Lock-Free SPSC   | alignas(64) cache isolation; zero contention |
+| Memory Transport Bridge  | CPU copy / socket I/O    | 12.23 GB/s Direct /dev/shm| Maps DPDK buffers directly to AI in <15 µs   |
+| Traffic Burst Defense    | Tail latency spike (>70m)| P99 29.02 ms (0.00% drops)| Predictively sheds expired telemetry in ring |
+| Saturation Storm Adapt   | Drops sessions / bypass  | Dynamic INT8 Governor     | Doubles throughput to sustain continuous DPI |
+| Resident Core Footprint  | Hundreds of MBs          | 4.8 MB Resident Core      | Pure C++17; fits easily into on-box silicon  |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
 
-To solve this, I engineered a C++17 runtime with zero heap allocations on the critical execution path:
-- Sub-15ns Lock-Free Dataplane Parity: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating lock contention and CPU cache-line bouncing across high-rate packet cores.
-- Zero-Copy Direct-Memory Transport (12.23 GB/s): Maps DPDK-style packet buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating CPU/PCIe serialization.
-- Predictive Jitter Shedding & Queue Defense: Under line-rate traffic bursts, the closed-loop scheduler predictively sheds stale intermediate telemetry, bounding P99 worst-case tail latency to 29.02 ms (vs. 73 ms+ queue runaway in unmanaged FIFO systems) and maintaining a 0.00% packet buffer drop rate.
-- Dynamic Precision Degradation: Closed-loop governor automatically degrades deep packet inspection models from FP16 to INT8 during saturation storms, halving memory bandwidth and doubling throughput to maintain continuous inline inspection.
-- High-Assurance Tamper-Proof Flight Recorder: Pre-allocated, zero-heap ring buffer (60,000 frames @ 1 kHz) logging inference decisions and thermals with rolling SHA-256 cryptographic signatures.
-- Ultra-Lean 4.8 MB Resident Core: Built without external framework dependencies, easily fitting into constrained on-box network processors.
+CORE LOW-LEVEL SYSTEMS INNOVATIONS:
+1. Sub-15ns Lock-Free Dataplane Parity: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), eliminating lock contention and CPU cache-line bouncing across high-rate packet cores.
+2. Zero-Copy Direct-Memory Transport (12.23 GB/s): Maps DPDK-style packet buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating CPU/PCIe serialization.
+3. Predictive Jitter Shedding & Queue Defense: Under line-rate traffic bursts, the closed-loop scheduler predictively sheds stale intermediate telemetry, bounding P99 worst-case tail latency to 29.02 ms (vs. 73 ms+ queue runaway in unmanaged FIFO systems) and maintaining a 0.00% packet buffer drop rate.
+4. Dynamic Precision Degradation: Closed-loop governor automatically degrades deep packet inspection models from FP16 to INT8 during saturation storms, halving memory bandwidth and doubling throughput to maintain continuous inline inspection.
+5. High-Assurance Tamper-Proof Flight Recorder: Pre-allocated, zero-heap ring buffer (60,000 frames @ 1 kHz) logging inference decisions and thermals with rolling SHA-256 cryptographic signatures.
+6. Ultra-Lean 4.8 MB Resident Core: Built without external framework dependencies, easily fitting into constrained on-box network processors.
 
 I've attached my full resume (S_Vikas_Resume.pdf) and documented the complete architecture, cache-line profiling, and empirical benchmark data here:
 - Attached Resume: S_Vikas_Resume.pdf (Vel Tech B.Tech CSE 8.67 CGPA, 3 Patents Filed, Ashok Leyland R&D)
@@ -372,8 +478,8 @@ Thank you for your time and for building the world's most robust security datapl
 
 Thanks for your time,
 S. Vikas
-B.Tech Computer Science & Engineering (CGPA: 8.67 / 10)
-Vel Tech University, Chennai
+Systems Software & Edge AI Engineer
+B.Tech Computer Science & Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikas-s070106
 GitHub: https://github.com/VIKASSAMVEL
@@ -397,17 +503,56 @@ Portfolio: https://vikas-world.vercel.app
 
   <p>Over the last several months, I built an open-source deterministic AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I engineered it specifically to solve the architectural challenge of running deep learning inline without breaking line-rate guarantees:</p>
 
-  <ol>
-    <li><strong>Microsecond Dataplane Deadlines vs. Millisecond ML Queues:</strong> Network dataplanes (DPDK / hardware NIC rings) operate with microsecond-level deterministic deadlines (&lt;100&mu;s budgets). In contrast, deep learning inference engines (TensorRT, ONNX Runtime) are asynchronous, batch-oriented, and queue-dependent. Under traffic bursts or DDoS conditions, ML queues back up, creating multi-millisecond tail latency blowouts (&gt;70 ms) that either exhaust packet buffer rings (causing dropped sessions) or force appliances to bypass deep inspection.</li>
-    <li><strong>Cache Contention &amp; Mutex Bouncing Across Packet Cores:</strong> Standard ML runtimes carry heavy resident footprints (hundreds of MBs) and use coarse mutex locking that creates severe cache-line bouncing across multi-core dataplane processors.</li>
-    <li><strong>Lack of Tamper-Proof Audit Logging:</strong> Threat classification decisions made inline need immutable forensic verification for regulatory compliance without incurring disk I/O latency penalties on the packet path.</li>
-  </ol>
+  <div class="section-title">Architectural Benchmark: Incumbent vs. EdgeModelScheduler v4.0</div>
+  <div class="table-box">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Generic ML on Security Hardware</th>
+          <th>EdgeModelScheduler v4.0</th>
+          <th>Single-Pass Dataplane Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dataplane Ingress Parity</strong></td>
+          <td class="metric-standard">Mutex locking &amp; cache-line bouncing</td>
+          <td class="metric-highlight">Sub-15ns Lock-Free SPSC</td>
+          <td><code>alignas(64)</code> cache-isolated atomics; zero contention with DPDK rings</td>
+        </tr>
+        <tr>
+          <td><strong>Direct Memory Transport</strong></td>
+          <td class="metric-standard">CPU memory copy &amp; socket I/O</td>
+          <td class="metric-highlight">12.23 GB/s Direct <code>/dev/shm</code></td>
+          <td>Maps packet buffers directly to AI acceleration memory in &lt;15 &mu;s</td>
+        </tr>
+        <tr>
+          <td><strong>Line-Rate Surge Defense</strong></td>
+          <td class="metric-standard">Queue tail blowout (&gt;70 ms)</td>
+          <td class="metric-highlight">P99 29.02 ms (0.00% drops)</td>
+          <td>Predictively sheds stale intermediate telemetry during packet bursts</td>
+        </tr>
+        <tr>
+          <td><strong>Saturation Storm Adapt</strong></td>
+          <td class="metric-standard">Drops valid sessions or bypasses DPI</td>
+          <td class="metric-highlight">Dynamic INT8 Governor</td>
+          <td>Automatically halves model precision to double throughput &amp; sustain DPI</td>
+        </tr>
+        <tr>
+          <td><strong>Resident Core Footprint</strong></td>
+          <td class="metric-standard">Hundreds of MBs (heavy runtimes)</td>
+          <td class="metric-highlight">4.8 MB Resident Core</td>
+          <td>Pure C++17; runs self-contained on on-box security processors</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <p>To solve this, I engineered a C++17 runtime with zero heap allocations on the critical execution path:</p>
-
+  <div class="section-title">Core Low-Level Systems Innovations:</div>
   <ul>
-    <li><strong>Sub-15ns Lock-Free Dataplane Parity:</strong> Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating lock contention and CPU cache-line bouncing across high-rate packet cores.</li>
-    <li><strong>Zero-Copy Direct-Memory Transport (12.23 GB/s):</strong> Maps DPDK-style packet buffers directly to AI acceleration memory in &lt;15 microseconds via 64-byte virtual handles over <code>/dev/shm</code>, eliminating CPU/PCIe serialization.</li>
+    <li><strong>Sub-15ns Lock-Free Dataplane Parity:</strong> Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), eliminating lock contention and CPU cache-line bouncing across high-rate packet cores.</li>
+    <li><strong>Zero-Copy Direct-Memory Transport (12.23 GB/s):</strong> Maps DPDK-style packet buffers directly to AI acceleration memory in &lt;15 microseconds via 64-byte virtual handles over <code>/dev/shm</code>.</li>
     <li><strong>Predictive Jitter Shedding &amp; Queue Defense:</strong> Under line-rate traffic bursts, the closed-loop scheduler predictively sheds stale intermediate telemetry, bounding P99 worst-case tail latency to <strong>29.02 ms</strong> (vs. 73 ms+ queue runaway in unmanaged FIFO systems) and maintaining a <strong>0.00% packet buffer drop rate</strong>.</li>
     <li><strong>Dynamic Precision Degradation:</strong> Closed-loop governor automatically degrades deep packet inspection models from FP16 to INT8 during saturation storms, halving memory bandwidth and doubling throughput to maintain continuous inline inspection.</li>
     <li><strong>High-Assurance Tamper-Proof Flight Recorder:</strong> Pre-allocated, zero-heap ring buffer (60,000 frames @ 1 kHz) logging inference decisions and thermals with rolling SHA-256 cryptographic signatures.</li>
@@ -431,7 +576,7 @@ Portfolio: https://vikas-world.vercel.app
 
   <div class="footer">
     <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">S. Vikas</p>
-    <p style="margin: 0 0 4px 0; color: #475569;">B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Systems Software &amp; Edge AI Engineer<br>B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikas-s070106">linkedin.com/in/vikas-s070106</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a> | Portfolio: <a href="https://vikas-world.vercel.app">vikas-world.vercel.app</a>
@@ -443,7 +588,7 @@ Portfolio: https://vikas-world.vercel.app
 """
 
     else: # panw_leadership
-        subject = "Final-year student (Vel Tech) — built deterministic C++17 runtime for inline AI network security"
+        subject = "EdgeModelScheduler v4.0: 4.8MB deterministic C++17 runtime for wire-speed inline AI security platforms"
         
         plain_text = f"""Hi {first_name},
 
@@ -453,17 +598,23 @@ I'm S. Vikas, a final-year B.Tech CSE student at Vel Tech University in Chennai 
 
 Over the last several months, I built an open-source deterministic AI co-scheduler in C++17 (EdgeModelScheduler v4.0). I engineered it specifically to solve the performance trade-offs of deploying deep learning inline on enterprise security hardware:
 
-1. Stopping Threats Inline vs. Line-Rate Latency: Running AI out-of-band or in the cloud leaves a multi-second detection window that modern automated attacks exploit. However, embedding deep learning directly into hardware firewalls risks creating latency bottlenecks whenever traffic bursts occur, since standard ML frameworks were designed for datacenter servers rather than wire-speed network appliances.
-2. Managing Traffic Surges Without Dropping Traffic: Under DDoS conditions or packet bursts, standard inference queues back up, creating multi-millisecond tail latency spikes (>70 ms). This forces firewalls to either drop valid sessions or bypass inspection.
-3. Memory and Hardware Resource Constraints: Standard AI runtimes require hundreds of megabytes of resident memory and rely on heavy frameworks that are unsuitable for on-box security processors.
+ARCHITECTURAL BENCHMARK: CONVENTIONAL DETECTION VS. EDGEMODELSCHEDULER v4.0
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Dimension                | Conventional Detection   | EdgeModelScheduler v4.0   | Platformization & Precision AI Advantage     |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
+| Threat Detection Window  | Multi-second cloud lag   | Wire-speed deterministic  | Stops zero-days before enterprise ingress    |
+| Traffic Surge Defense    | Session drops / bypass   | Bounded P99 29.02 ms      | 0.00% packet buffer drop rate under DDoS     |
+| Hardware Footprint       | Hundreds of MBs          | 4.8 MB Resident Core      | Pure C++17; runs self-contained on appliances|
+| Forensic Auditability    | Post-incident disk logs  | Rolling SHA-256 binary    | 60,000 frames @ 1 kHz immutable flight trail |
++--------------------------+--------------------------+---------------------------+----------------------------------------------+
 
-To address these challenges, I built a pure C++17 runtime with zero heap allocations on the critical path:
-- Deterministic Queue Defense: Predictively sheds expired intermediate telemetry during line-rate traffic bursts, bounding P99 worst-case tail latency to 29.02 ms (vs. 73 ms+ queue runaway in unmanaged FIFO systems) with a 0.00% packet buffer drop rate.
-- Sub-15ns Lock-Free Dataplane Ring: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), preventing CPU lock contention and cache-line bouncing.
-- Direct-Memory Transport (12.23 GB/s): Maps packet buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating memory copy overhead.
-- Dynamic Precision Governor: Automatically shifts deep packet inspection models from FP16 to INT8 during heavy traffic storms to double throughput and maintain continuous inline protection.
-- Immutable Forensic Flight Recorder: Pre-allocated circular telemetry buffer (60,000 frames @ 1 kHz) that logs every inline AI decision with rolling SHA-256 cryptographic signatures for compliance and incident response.
-- Ultra-Lean 4.8 MB Resident Footprint: Runs completely self-contained without heavy external dependencies.
+CORE LOW-LEVEL SYSTEMS INNOVATIONS:
+1. Deterministic Queue Defense: Predictively sheds expired intermediate telemetry during line-rate traffic bursts, bounding P99 worst-case tail latency to 29.02 ms (vs. 73 ms+ queue runaway in unmanaged FIFO systems) with a 0.00% packet buffer drop rate.
+2. Sub-15ns Lock-Free Dataplane Ring: Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (alignas(64)), preventing CPU lock contention and cache-line bouncing.
+3. Direct-Memory Transport (12.23 GB/s): Maps packet buffers directly to AI acceleration memory in <15 microseconds via 64-byte virtual handles over /dev/shm, eliminating memory copy overhead.
+4. Dynamic Precision Governor: Automatically shifts deep packet inspection models from FP16 to INT8 during heavy traffic storms to double throughput and maintain continuous inline protection.
+5. Immutable Forensic Flight Recorder: Pre-allocated circular telemetry buffer (60,000 frames @ 1 kHz) that logs every inline AI decision with rolling SHA-256 cryptographic signatures for compliance and incident response.
+6. Ultra-Lean 4.8 MB Resident Footprint: Runs completely self-contained without heavy external dependencies.
 
 I've attached my full resume (S_Vikas_Resume.pdf) and documented the complete architecture, dossier, and benchmarks here:
 - Attached Resume: S_Vikas_Resume.pdf (Vel Tech B.Tech CSE 8.67 CGPA, 3 Patents Filed, Ashok Leyland R&D)
@@ -478,8 +629,8 @@ Thank you for your time and leadership in shaping the future of cybersecurity.
 
 Thanks for your time,
 S. Vikas
-B.Tech Computer Science & Engineering (CGPA: 8.67 / 10)
-Vel Tech University, Chennai
+Systems Software & Edge AI Engineer
+B.Tech Computer Science & Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai
 vikassamvel123@gmail.com | +91 97908 01678
 LinkedIn: https://www.linkedin.com/in/vikas-s070106
 GitHub: https://github.com/VIKASSAMVEL
@@ -503,17 +654,50 @@ Portfolio: https://vikas-world.vercel.app
 
   <p>Over the last several months, I built an open-source deterministic AI co-scheduler in C++17 (<strong>EdgeModelScheduler v4.0</strong>). I engineered it specifically to solve the performance trade-offs of deploying deep learning inline on enterprise security hardware:</p>
 
-  <ol>
-    <li><strong>Stopping Threats Inline vs. Line-Rate Latency:</strong> Running AI out-of-band or in the cloud leaves a multi-second detection window that modern automated attacks exploit. However, embedding deep learning directly into hardware firewalls risks creating latency bottlenecks whenever traffic bursts occur, since standard ML frameworks were designed for datacenter servers rather than wire-speed network appliances.</li>
-    <li><strong>Managing Traffic Surges Without Dropping Traffic:</strong> Under DDoS conditions or packet bursts, standard inference queues back up, creating multi-millisecond tail latency spikes (&gt;70 ms). This forces firewalls to either drop valid sessions or bypass inspection.</li>
-    <li><strong>Memory and Hardware Resource Constraints:</strong> Standard AI runtimes require hundreds of megabytes of resident memory and rely on heavy frameworks that are unsuitable for on-box security processors.</li>
-  </ol>
+  <div class="section-title">Architectural Benchmark: Incumbent vs. EdgeModelScheduler v4.0</div>
+  <div class="table-box">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Conventional Detection</th>
+          <th>EdgeModelScheduler v4.0</th>
+          <th>Platformization &amp; Precision AI Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Threat Detection Window</strong></td>
+          <td class="metric-standard">Multi-second cloud / out-of-band lag</td>
+          <td class="metric-highlight">Deterministic Wire-Speed Inline</td>
+          <td>Stops zero-days before enterprise ingress without creating traffic latency bottlenecks</td>
+        </tr>
+        <tr>
+          <td><strong>Traffic Surge Defense</strong></td>
+          <td class="metric-standard">Session drops or inspection bypass</td>
+          <td class="metric-highlight">0.00% Packet Drop Rate</td>
+          <td>Predictive queue defense bounds P99 worst-case tail latency to <strong>29.02 ms</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Appliance Resource Draw</strong></td>
+          <td class="metric-standard">Hundreds of MBs &amp; heavy runtime</td>
+          <td class="metric-highlight">4.8 MB Resident Core</td>
+          <td>Pure C++17; runs completely self-contained on enterprise hardware firewalls</td>
+        </tr>
+        <tr>
+          <td><strong>Forensic Compliance</strong></td>
+          <td class="metric-standard">Post-incident disk logs</td>
+          <td class="metric-highlight">Rolling SHA-256 Flight Recorder</td>
+          <td>Pre-allocated ring buffer (60,000 frames @ 1 kHz) with cryptographic immutability</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <p>To address these challenges, I built a pure C++17 runtime with zero heap allocations on the critical path:</p>
-
+  <div class="section-title">Core Low-Level Systems Innovations:</div>
   <ul>
     <li><strong>Deterministic Queue Defense:</strong> Predictively sheds expired intermediate telemetry during line-rate traffic bursts, bounding P99 worst-case tail latency to <strong>29.02 ms</strong> (vs. 73 ms+ queue runaway in unmanaged FIFO systems) with a <strong>0.00% packet buffer drop rate</strong>.</li>
-    <li><strong>Sub-15ns Lock-Free Dataplane Ring:</strong> Custom Single-Producer Single-Consumer (SPSC) circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), preventing CPU lock contention and cache-line bouncing.</li>
+    <li><strong>Sub-15ns Lock-Free Dataplane Ring:</strong> Custom Single-Producer Single-Consumer circular rings with head and tail atomics isolated on separate 64-byte cache lines (<code>alignas(64)</code>), preventing CPU lock contention and cache-line bouncing.</li>
     <li><strong>Direct-Memory Transport (12.23 GB/s):</strong> Maps packet buffers directly to AI acceleration memory in &lt;15 microseconds via 64-byte virtual handles over <code>/dev/shm</code>, eliminating memory copy overhead.</li>
     <li><strong>Dynamic Precision Governor:</strong> Automatically shifts deep packet inspection models from FP16 to INT8 during heavy traffic storms to double throughput and maintain continuous inline protection.</li>
     <li><strong>Immutable Forensic Flight Recorder:</strong> Pre-allocated circular telemetry buffer (60,000 frames @ 1 kHz) that logs every inline AI decision with rolling SHA-256 cryptographic signatures for compliance and incident response.</li>
@@ -537,7 +721,7 @@ Portfolio: https://vikas-world.vercel.app
 
   <div class="footer">
     <p style="margin: 0 0 2px 0; font-weight: 600; color: #0f172a;">S. Vikas</p>
-    <p style="margin: 0 0 4px 0; color: #475569;">B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
+    <p style="margin: 0 0 4px 0; color: #475569;">Systems Software &amp; Edge AI Engineer<br>B.Tech Computer Science &amp; Engineering (CGPA: 8.67 / 10), Vel Tech University, Chennai</p>
     <p style="margin: 0; font-size: 13px;">
       Email: <a href="mailto:vikassamvel123@gmail.com">vikassamvel123@gmail.com</a> | Phone: +91 97908 01678<br>
       LinkedIn: <a href="https://www.linkedin.com/in/vikas-s070106">linkedin.com/in/vikas-s070106</a> | GitHub: <a href="https://github.com/VIKASSAMVEL">github.com/VIKASSAMVEL</a> | Portfolio: <a href="https://vikas-world.vercel.app">vikas-world.vercel.app</a>
@@ -585,7 +769,7 @@ def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "--dry-run"
 
     print("=================================================================")
-    print("🚀 EdgeModelScheduler Executive Outreach Dispatcher")
+    print("🚀 EdgeModelScheduler Executive Outreach Dispatcher (Option D)")
     print(f"   Sender     : {sender_email}")
     print(f"   Resume PDF : {RESUME_PATH} (exists: {os.path.exists(RESUME_PATH)})")
     print(f"   Attachment : S_Vikas_Resume.pdf")
@@ -602,10 +786,10 @@ def main():
             print(f"SUBJECT: {subj}")
             print(f"ATTACHMENT: S_Vikas_Resume.pdf (verified: {os.path.exists(RESUME_PATH)})")
             print(f"-----------------------------------------------------------------")
-            print(plain[:300] + "...\n[Full body ready to send with S_Vikas_Resume.pdf attached]\n")
+            print(plain[:320] + "...\n[Full body ready to send with benchmark table and resume attached]\n")
         print("Dry run completed. No emails were sent.")
-        print("To send a test verification mail to yourself, run:")
-        print("  python outreach/send_outreach.py --test-me\n")
+        print("To send a sample verification mail, run:")
+        print("  python outreach/send_outreach.py --to vtu24383@veltech.edu.in\n")
         print("To send individually to all 9 executives, run:")
         print("  python outreach/send_outreach.py --send\n")
 
@@ -626,9 +810,9 @@ def main():
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
             server.login(sender_email, app_password)
             subj, plain, html = generate_email_content(RECIPIENTS[0])
-            sample_subj = f"[SAMPLE VERIFICATION] {subj}"
+            sample_subj = f"[SAMPLE OPTION-D VERIFICATION] {subj}"
             send_single_mail(server, sender_email, target_addr, sample_subj, plain, html)
-        print(f"✅ Sample email successfully sent to {target_addr} with resume attached (S_Vikas_Resume.pdf)!")
+        print(f"✅ Sample Option-D email successfully sent to {target_addr} with resume attached (S_Vikas_Resume.pdf)!")
 
     elif mode == "--send":
         print("⚠️  CONFIRMED SEND MODE: Dispatching individually to each recipient...")
